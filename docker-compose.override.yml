@@ -1,0 +1,12 @@
+# =====================================================================
+# Docker Compose Override — Desarrollo local
+# =====================================================================
+# Solo se aplica con: docker compose -f docker-compose.yml -f docker-compose.override.yml up
+# Dokploy ignora este archivo (solo usa docker-compose.yml).
+# =====================================================================
+
+services:
+  billmora:
+    ports:
+      - "8080:8080"
+    labels: []  # Sin labels Traefik en local

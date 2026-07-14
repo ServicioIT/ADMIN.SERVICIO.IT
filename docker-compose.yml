@@ -1,0 +1,75 @@
+# =====================================================================
+# ADMIN.SERVICIO.IT — Billmora v1.0.0 + Módulos SERVICIO IT
+# =====================================================================
+# Fork de Billmora/billmora con módulos custom de SERVICIO IT.
+# Desplegado vía Dokploy en MONTREAL (proyecto SERVICIOS).
+#
+# Build:  docker compose build --no-cache
+# Deploy: ./scripts/deploy.sh montreal y55-ARxuZosvSXI73ONB5
+# =====================================================================
+
+services:
+  database:
+    image: mariadb:lts
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - admin-servicio-it-db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE:-billmora}
+      - MYSQL_USER=${MYSQL_USER:-billmora}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    networks:
+      - dokploy-network
+
+  cache:
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - admin-servicio-it-redis:/data
+    networks:
+      - dokploy-network
+
+  billmora:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - database
+      - cache
+    volumes:
+      - admin-servicio-it-storage:/var/www/html/storage
+      - admin-servicio-it-bootstrap:/var/www/html/bootstrap/cache
+    env_file: .env
+    networks:
+      - dokploy-network
+    labels:
+      - traefik.docker.network=dokploy-network
+      - traefik.enable=true
+
+      # HTTP → HTTPS redirect
+      - traefik.http.routers.admin-web.rule=Host(`admin.servicio.it`)
+      - traefik.http.routers.admin-web.entrypoints=web
+      - traefik.http.routers.admin-web.middlewares=redirect-to-https@file
+      - traefik.http.routers.admin-web.service=admin-servicio-it
+
+      # HTTPS
+      - traefik.http.routers.admin-websecure.rule=Host(`admin.servicio.it`)
+      - traefik.http.routers.admin-websecure.entrypoints=websecure
+      - traefik.http.routers.admin-websecure.tls.certresolver=letsencrypt
+      - traefik.http.routers.admin-websecure.service=admin-servicio-it
+
+      # Service (puerto interno 8080 = serversideup/php)
+      - traefik.http.services.admin-servicio-it.loadbalancer.server.port=8080
+
+volumes:
+  admin-servicio-it-db: {}
+  admin-servicio-it-storage: {}
+  admin-servicio-it-bootstrap: {}
+  admin-servicio-it-redis: {}
+
+networks:
+  dokploy-network:
+    external: true

@@ -1,0 +1,8 @@
+{
+    "name": "ServicioIT System",
+    "provider": "ServicioITSystem",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "Módulo de personalización del sistema para SERVICIO IT — admin.servicio.it. Aplica configuraciones, traducciones y ajustes de identidad corporativa.",
+    "author": "SERVICIO IT"
+}

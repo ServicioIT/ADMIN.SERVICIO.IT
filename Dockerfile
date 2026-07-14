@@ -1,53 +1,35 @@
-# Stage 1: Compile Vite theme assets (admin, client, portal)
-FROM node:22-alpine AS asset-builder
-WORKDIR /app
+# =====================================================================
+# ADMIN.SERVICIO.IT — Dockerfile custom (extiende imagen oficial Billmora)
+# =====================================================================
+# Hereda la imagen pre-compilada de Billmora y agrega los módulos custom
+# de SERVICIO IT sin modificar el core ni recompilar assets.
+#
+# La imagen base ya contiene:
+#   - Laravel 12 + PHP 8.3 FPM + Nginx (serversideup/php)
+#   - Dependencias Composer instaladas
+#   - Assets Vite compilados (admin, client, portal themes)
+#   - Entrypoint que genera APP_KEY si no existe
+#
+# Build:  docker build -t admin-servicio-it:custom .
+# Deploy: Dokploy usa este Dockerfile automáticamente (build: .)
+# =====================================================================
 
-COPY package*.json ./
-RUN npm ci
-
-COPY . .
-RUN npx vite build --config=resources/themes/admin/moraine/vite.config.js && \
-    npx vite build --config=resources/themes/client/moraine/vite.config.js && \
-    npx vite build --config=resources/themes/portal/moraine/vite.config.js
-
-# Stage 2: Production (PHP 8.3 FPM + Nginx via serversideup/php)
-FROM serversideup/php:8.3-fpm-nginx
-
-LABEL org.opencontainers.image.title="Billmora"
-LABEL org.opencontainers.image.description="Billmora — Billing & Automation Platform"
-LABEL org.opencontainers.image.source="https://github.com/billmora/billmora"
-LABEL org.opencontainers.image.licenses="BUSL-1.1"
-
-WORKDIR /var/www/html
+FROM ghcr.io/billmora/billmora:1.0.0
 
 USER root
 
-# PHP extensions required by linux-server.md
-RUN install-php-extensions \
-    bcmath \
-    curl \
-    gd \
-    intl \
-    mbstring \
-    pdo_mysql \
-    redis \
-    xml \
-    zip
+# Copiar módulos custom de SERVICIO IT
+COPY plugin/Modules/ServicioITSystem/ /var/www/html/plugin/Modules/ServicioITSystem/
 
-COPY --from=asset-builder --chown=www-data:www-data /app /var/www/html
+# Copiar providers custom (archivo nuevo — no existe upstream)
+COPY bootstrap/custom-providers.php /var/www/html/bootstrap/custom-providers.php
 
-COPY .github/docker/entrypoint.sh /etc/entrypoint.d/99-ensure-env.sh
-RUN chmod +x /etc/entrypoint.d/99-ensure-env.sh
+# Copiar providers.php modificado (agrega include de custom-providers.php)
+COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
 
-RUN rm -rf node_modules tests .git .github
+# Asegurar permisos
+RUN chown -R www-data:www-data /var/www/html/plugin/Modules/ServicioITSystem/ \
+    && chmod -R 755 /var/www/html/plugin/Modules/ServicioITSystem/
 
-# Temporarily switch to www-data for safe Composer installation
-USER www-data
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-RUN chmod -R 775 storage bootstrap/cache
-
-# Privileges will be automatically dropped to www-data after initialization.
-USER root
-
-EXPOSE 8080
+# Puerto ya expuesto por la imagen base (8080)
+# Entrypoint y CMD se heredan de la imagen oficial
