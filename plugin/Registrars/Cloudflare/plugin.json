@@ -1,0 +1,8 @@
+{
+    "name": "Cloudflare",
+    "provider": "Cloudflare",
+    "type": "registrar",
+    "version": "1.0.0",
+    "description": "Integración con Cloudflare DNS — gestión de zonas, registros DNS, y verificación de disponibilidad. El registro/transferencia/renovación de dominios se realiza manualmente desde el panel de Cloudflare.",
+    "author": "SERVICIO IT"
+}
