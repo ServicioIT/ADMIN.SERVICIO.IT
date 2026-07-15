@@ -12,16 +12,16 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci
 
-# Copy theme source files (CSS + JS para build)
-COPY resources/themes/admin/servicioit/css/ resources/themes/admin/servicioit/css/
-COPY resources/themes/admin/servicioit/js/ resources/themes/admin/servicioit/js/
-COPY resources/themes/admin/servicioit/vite.config.js resources/themes/admin/servicioit/vite.config.js
-COPY resources/themes/client/servicioit/css/ resources/themes/client/servicioit/css/
-COPY resources/themes/client/servicioit/js/ resources/themes/client/servicioit/js/
-COPY resources/themes/client/servicioit/vite.config.js resources/themes/client/servicioit/vite.config.js
-COPY resources/themes/portal/servicioit/css/ resources/themes/portal/servicioit/css/
-COPY resources/themes/portal/servicioit/js/ resources/themes/portal/servicioit/js/
-COPY resources/themes/portal/servicioit/vite.config.js resources/themes/portal/servicioit/vite.config.js
+# Copy theme source files (CSS + JS + views para build)
+# ⚠️ Tailwind 4 usa @source para escanear vistas en busca de clases.
+# Sin las vistas, el CSS sale sin utilidades (.flex, .grid, etc.)
+COPY resources/themes/admin/servicioit/ resources/themes/admin/servicioit/
+COPY resources/themes/client/servicioit/ resources/themes/client/servicioit/
+COPY resources/themes/portal/servicioit/ resources/themes/portal/servicioit/
+
+# Copy vendor + plugin views (requeridas por @source en app.css)
+COPY vendor/laravel/framework/src/Illuminate/Pagination/resources/views/ vendor/laravel/framework/src/Illuminate/Pagination/resources/views/
+COPY plugin/ plugin/
 
 # Build each theme
 RUN npx vite build --config=resources/themes/admin/servicioit/vite.config.js && \
