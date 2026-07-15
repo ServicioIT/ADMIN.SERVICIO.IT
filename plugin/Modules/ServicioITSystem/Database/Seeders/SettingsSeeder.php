@@ -16,8 +16,9 @@ class SettingsSeeder extends Seeder
         $this->applyCompanyIdentity();
         $this->applyPortalTexts();
         $this->applyCurrencies();
+        $this->applyThemeConfigs();
 
-        $this->command?->info('✅ SERVICIO IT — identidad, portal y monedas aplicados.');
+        $this->command?->info('✅ SERVICIO IT — identidad, portal, monedas y temas aplicados.');
     }
 
     /**
@@ -102,6 +103,37 @@ class SettingsSeeder extends Seeder
                 ['code' => $currency['code']],
                 array_merge($currency, ['updated_at' => now()])
             );
+        }
+    }
+
+    /**
+     * Copiar config de temas Moraine → ServicioIT al activar.
+     * Evita errores de claves undefined (hero_title, auth_logo_url, etc.)
+     */
+    protected function applyThemeConfigs(): void
+    {
+        foreach (['admin', 'client', 'portal'] as $type) {
+            $moraine = DB::table('themes')
+                ->where('provider', 'moraine')->where('type', $type)
+                ->value('config');
+            if (empty($moraine) || $moraine === '[]') continue;
+
+            $config = json_decode($moraine, true) ?: [];
+            if (empty($config)) continue;
+
+            // Reemplazar Billmora → SERVICIO IT
+            foreach ($config as $k => &$v) {
+                if (is_string($v)) $v = str_replace('Billmora', 'SERVICIO IT', $v);
+            }
+
+            $current = DB::table('themes')
+                ->where('provider', 'servicioit')->where('type', $type)
+                ->value('config');
+            if (empty($current) || $current === '[]') {
+                DB::table('themes')
+                    ->where('provider', 'servicioit')->where('type', $type)
+                    ->update(['config' => json_encode($config)]);
+            }
         }
     }
 }
