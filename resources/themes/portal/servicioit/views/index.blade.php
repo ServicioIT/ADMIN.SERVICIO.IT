@@ -4,7 +4,7 @@
 {{-- HERO SECTION --}}
 <div class="absolute inset-0 h-full w-full bg-billmora-neutral-50 bg-[radial-gradient(#e5e7eb_1.5px,transparent_1.5px)] bg-size-[20px_20px] -z-10"></div>
 <section class="max-w-7xl mx-auto">
-    <div class="w-full min-h-[80vh] grid md:grid-cols-2 justify-around items-center px-4 py-16 gap-8">
+    <div class="w-full min-h-[80vh] grid md:grid-cols-2 justify-around items-start md:items-center px-4 pt-32 pb-16 gap-8">
         <div class="grid gap-6">
             <span class="text-billmora-primary-500 font-semibold text-sm uppercase tracking-wider">Servicios Informáticos, Tecnológicos & Soporte</span>
             <h1 class="text-5xl font-bold text-slate-800 leading-tight">

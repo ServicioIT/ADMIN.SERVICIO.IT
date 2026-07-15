@@ -52,6 +52,9 @@ COPY lang/es_CO/ /var/www/html/lang/es_CO/
 # Copy módulos custom SERVICIO IT
 COPY plugin/Modules/ServicioITSystem/ /var/www/html/plugin/Modules/ServicioITSystem/
 
+# Copy registrar plugins
+COPY plugin/Registrars/ /var/www/html/plugin/Registrars/
+
 # Copy providers custom
 COPY bootstrap/custom-providers.php /var/www/html/bootstrap/custom-providers.php
 COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
@@ -65,9 +68,11 @@ RUN chown -R www-data:www-data /var/www/html/public/themes/admin/servicioit/ \
     /var/www/html/resources/themes/portal/servicioit/ \
     /var/www/html/lang/es_CO/ \
     /var/www/html/plugin/Modules/ServicioITSystem/ \
+    /var/www/html/plugin/Registrars/ \
     && chmod -R 755 /var/www/html/public/themes/ \
     /var/www/html/resources/themes/ \
     /var/www/html/lang/es_CO/ \
-    /var/www/html/plugin/Modules/ServicioITSystem/
+    /var/www/html/plugin/Modules/ServicioITSystem/ \
+    /var/www/html/plugin/Registrars/
 
 EXPOSE 8080
