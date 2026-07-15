@@ -28,7 +28,7 @@ class SettingsSeeder extends Seeder
         $settings = [
             'company_name'        => 'SERVICIO IT',
             'company_description' => 'Plataforma de facturación, administración y control total para tu negocio.',
-            'company_language'    => 'es',              // 'es_419' rompe el flag del header
+            'company_language'    => 'es_CO',            // es_CO → flag Colombia, es_419 rompía el header
             'company_timezone'    => 'America/Bogota',
             'company_date_format' => 'd/m/Y',
             'company_portal'      => '1',

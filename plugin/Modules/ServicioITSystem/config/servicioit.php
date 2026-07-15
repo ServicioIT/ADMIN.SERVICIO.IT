@@ -20,7 +20,7 @@ return [
     'app.name'            => 'SERVICIO IT',
     'app.url'             => 'https://admin.servicio.it',
     'app.timezone'        => 'America/Bogota',
-    'app.locale'          => 'es',
+    'app.locale'          => 'es_CO',
     'app.fallback_locale' => 'en_US',
 
     /*
