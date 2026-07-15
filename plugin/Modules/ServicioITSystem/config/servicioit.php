@@ -6,8 +6,8 @@
  * Estas configuraciones complementan las que se almacenan en la base de datos
  * (tabla `settings`). Se aplican en el boot del módulo ServicioITSystem.
  *
- * Las configuraciones de base de datos (company_name, moneda, formatos) se
- * aplican vía el seeder SettingsSeeder.
+ * Las configuraciones de base de datos (company_name, moneda, formatos, portal)
+ * se aplican vía el seeder SettingsSeeder.
  */
 
 return [
@@ -17,10 +17,10 @@ return [
     | Identidad corporativa
     |--------------------------------------------------------------------------
     */
-    'app.name'          => 'SERVICIO IT',
-    'app.url'           => 'https://admin.servicio.it',
-    'app.timezone'      => 'America/Bogota',
-    'app.locale'        => 'es_419',
+    'app.name'            => 'SERVICIO IT',
+    'app.url'             => 'https://admin.servicio.it',
+    'app.timezone'        => 'America/Bogota',
+    'app.locale'          => 'es',
     'app.fallback_locale' => 'en_US',
 
     /*
@@ -36,8 +36,8 @@ return [
     | Formatos regionales
     |--------------------------------------------------------------------------
     */
-    'servicioit.date_format'     => 'd/m/Y',
-    'servicioit.default_country' => 'CO',
+    'servicioit.date_format'      => 'd/m/Y',
+    'servicioit.default_country'  => 'CO',
     'servicioit.default_currency' => 'COP',
 
     /*
@@ -45,15 +45,8 @@ return [
     | URLs externas
     |--------------------------------------------------------------------------
     */
-    'servicioit.support_url'  => 'https://estado.servicio.it',
-    'servicioit.website_url'  => 'https://servicio.it',
-    'servicioit.billing_url'  => 'https://cobros.servicio.it',
-
-    /*
-    |--------------------------------------------------------------------------
-    | Traducciones — forzar locale es_419
-    |--------------------------------------------------------------------------
-    */
-    'servicioit.force_locale' => true,
+    'servicioit.support_url' => 'https://estado.servicio.it',
+    'servicioit.website_url' => 'https://servicio.it',
+    'servicioit.billing_url' => 'https://cobros.servicio.it',
 
 ];

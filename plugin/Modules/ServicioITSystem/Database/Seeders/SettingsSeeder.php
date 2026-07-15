@@ -8,50 +8,67 @@ use Illuminate\Support\Facades\DB;
 class SettingsSeeder extends Seeder
 {
     /**
-     * Configuraciones iniciales de SERVICIO IT.
-     *
-     * Usa updateOrInsert para ser idempotente — se puede ejecutar
-     * múltiples veces sin duplicar ni sobrescribir cambios manuales.
+     * Configuraciones de SERVICIO IT.
+     * Idempotente — updateOrInsert permite re-ejecución segura.
      */
     public function run(): void
     {
-        $this->applyCompanySettings();
-        $this->applyCurrencySettings();
+        $this->applyCompanyIdentity();
+        $this->applyPortalTexts();
+        $this->applyCurrencies();
 
-        $this->command?->info('✅ SERVICIO IT settings applied.');
+        $this->command?->info('✅ SERVICIO IT — identidad, portal y monedas aplicados.');
     }
 
     /**
-     * Identidad de la empresa (category: general).
+     * Identidad corporativa (category: general).
      */
-    protected function applyCompanySettings(): void
+    protected function applyCompanyIdentity(): void
     {
         $settings = [
-            'company_name'       => 'SERVICIO IT',
-            'company_language'   => 'es_419',
-            'company_timezone'   => 'America/Bogota',
-            'company_date_format'=> 'd/m/Y',
-            'company_portal'     => '1',
-            'company_maintenance'=> '0',
+            'company_name'        => 'SERVICIO IT',
+            'company_description' => 'Plataforma de facturación, administración y control total para tu negocio.',
+            'company_language'    => 'es',              // 'es_419' rompe el flag del header
+            'company_timezone'    => 'America/Bogota',
+            'company_date_format' => 'd/m/Y',
+            'company_portal'      => '1',
+            'company_maintenance' => '0',
         ];
 
         foreach ($settings as $key => $value) {
             DB::table('settings')->updateOrInsert(
                 ['key' => $key],
-                [
-                    'category'   => 'general',
-                    'value'      => $value,
-                    'updated_at' => now(),
-                ]
+                ['category' => 'general', 'value' => $value, 'updated_at' => now()]
+            );
+        }
+    }
+
+    /**
+     * Portal público — textos en español.
+     */
+    protected function applyPortalTexts(): void
+    {
+        $portal = [
+            'hero_title'          => 'Haz crecer tu negocio con SERVICIO IT',
+            'hero_description'    => 'Plataforma gratuita de facturación y gestión para tu negocio.',
+            'catalog_title'       => 'Nuestros Catálogos',
+            'catalog_description' => '¿Qué quieres comprar?',
+            'cta_title'           => '¿Listo para empezar?',
+            'cta_description'     => 'Únete a cientos de empresas que confían en SERVICIO IT.',
+        ];
+
+        foreach ($portal as $key => $value) {
+            DB::table('settings')->updateOrInsert(
+                ['key' => $key],
+                ['category' => 'general', 'value' => $value, 'updated_at' => now()]
             );
         }
     }
 
     /**
      * Monedas: COP (default), USD, EUR.
-     * Schema: code, prefix, suffix, format, base_rate, is_default
      */
-    protected function applyCurrencySettings(): void
+    protected function applyCurrencies(): void
     {
         $currencies = [
             [

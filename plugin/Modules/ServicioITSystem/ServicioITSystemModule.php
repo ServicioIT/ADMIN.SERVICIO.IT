@@ -4,7 +4,6 @@ namespace Plugins\Modules\ServicioITSystem;
 
 use App\Contracts\ModuleInterface;
 use App\Support\AbstractPlugin;
-use Illuminate\Support\Facades\Event;
 
 class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
 {
@@ -24,7 +23,6 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
             'company_country' => [
                 'type'    => 'select',
                 'label'   => 'País por defecto',
-                'helper'  => 'País principal de operación.',
                 'options' => ['CO' => 'Colombia', 'US' => 'Estados Unidos', 'ES' => 'España', 'IT' => 'Italia'],
                 'rules'   => 'required|in:CO,US,ES,IT',
                 'default' => 'CO',
@@ -32,7 +30,6 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
             'default_currency' => [
                 'type'    => 'select',
                 'label'   => 'Moneda por defecto',
-                'helper'  => 'Moneda principal para facturación.',
                 'options' => ['COP' => 'COP — Peso Colombiano', 'USD' => 'USD — Dólar', 'EUR' => 'EUR — Euro'],
                 'rules'   => 'required|in:COP,USD,EUR',
                 'default' => 'COP',
@@ -40,7 +37,6 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
             'date_format' => [
                 'type'    => 'select',
                 'label'   => 'Formato de fecha',
-                'helper'  => 'Formato usado en todo el sistema.',
                 'options' => [
                     'd/m/Y' => 'd/m/Y (31/12/2026)',
                     'm/d/Y' => 'm/d/Y (12/31/2026)',
@@ -64,7 +60,7 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     }
 
     /**
-     * Admin navigation items.
+     * Admin navigation items (visible en sidebar del admin).
      */
     public function getNavigationAdmin(): array
     {
@@ -79,40 +75,15 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     }
 
     /**
-     * Events subscribed by this module.
-     * Hook into Billmora's lifecycle to apply our customizations.
-     */
-    public function getSubscribedEvents(): array
-    {
-        return [
-            // Hook into system boot to apply settings
-            \Illuminate\Foundation\Events\VendorTagPublished::class => 'onSystemBoot',
-        ];
-    }
-
-    /**
-     * Apply SERVICIO IT customizations on boot.
-     */
-    public function onSystemBoot($event): void
-    {
-        // Placeholder for event-driven customizations
-    }
-
-    /**
-     * Additional setup: apply config overrides, register custom views, etc.
+     * Apply SERVICIO IT config overrides on boot.
      */
     protected function setup(): void
     {
-        // Override default config values from our module
         $this->mergeConfigOverrides();
-
-        // Register custom admin views that extend core Billmora views
-        $this->registerCustomViews();
     }
 
     /**
-     * Merge SERVICIO IT configuration overrides at runtime.
-     * These complement (not replace) the database settings.
+     * Merge our custom config values at runtime.
      */
     protected function mergeConfigOverrides(): void
     {
@@ -124,27 +95,10 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     }
 
     /**
-     * Register additional view paths so our custom views take priority
-     * over the core Billmora views when they share the same name.
-     */
-    protected function registerCustomViews(): void
-    {
-        // Our views are already registered via AbstractPlugin as "module.servicioitsystem"
-        // Additional overrides for core views can be done via View::composer or View::prependLocation
-        $customViewsPath = $this->pluginPath . '/resources/views';
-
-        if (is_dir($customViewsPath)) {
-            // Prepend our views so they're checked first
-            app('view')->getFinder()->prependLocation($customViewsPath);
-        }
-    }
-
-    /**
-     * Register module services.
+     * Register module config for publication.
      */
     public function register()
     {
-        // Merge our config file
         $this->mergeConfigFrom(
             __DIR__ . '/config/servicioit.php', 'servicioit'
         );
