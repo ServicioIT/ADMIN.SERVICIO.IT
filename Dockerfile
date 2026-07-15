@@ -19,8 +19,9 @@ COPY resources/themes/admin/servicioit/ resources/themes/admin/servicioit/
 COPY resources/themes/client/servicioit/ resources/themes/client/servicioit/
 COPY resources/themes/portal/servicioit/ resources/themes/portal/servicioit/
 
-# Copy vendor + plugin views (requeridas por @source en app.css)
-COPY vendor/laravel/framework/src/Illuminate/Pagination/resources/views/ vendor/laravel/framework/src/Illuminate/Pagination/resources/views/
+# Copy plugin views (requeridas por @source en app.css)
+# NOTA: vendor/ no existe en el repo (gitignored). Las vistas de vendor
+# usan el CSS del tema moraine de Billmora, no afectan al tema servicioit.
 COPY plugin/ plugin/
 
 # Build each theme
