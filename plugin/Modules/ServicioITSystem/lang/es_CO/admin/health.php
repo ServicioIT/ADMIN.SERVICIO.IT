@@ -1,24 +1,25 @@
 <?php
 
 return [
-    'title' => 'System Health',
+    'description' => 'Monitorear la salud del sistema y las dependencias.',
+    'title' => 'Salud del Sistema',
     'database' => 'Database',
     'cache' => 'Cache',
     'environment' => 'Environment',
     'debug_mode' => 'Debug Mode',
-    'version' => 'Version',
-    'current_version' => 'Current Version',
-    'latest_version' => 'Latest Version',
-    'php_version' => 'PHP Version',
-    'laravel_version' => 'Framework Version',
+    'version' => 'Versión',
+    'current_version' => 'Current Versión',
+    'latest_version' => 'Latest Versión',
+    'php_version' => 'PHP Versión',
+    'laravel_version' => 'Framework Versión',
     'status' => [
         'ok' => 'Operational',
         'issue' => 'Issue Detected',
-        'enabled' => 'Enabled',
-        'disabled' => 'Disabled',
-        'up_to_date' => 'Up to Date',
-        'update_available' => 'Update Available',
-        'unknown' => 'Unknown',
+        'enabled' => 'Activard',
+        'disabled' => 'Desactivard',
+        'up_to_date' => 'Up to Fecha',
+        'update_available' => 'Actualizar Available',
+        'unknown' => 'Desconocido'
     ],
     'cards' => [
         'database_desc' => 'Database connection status and availability.',
@@ -27,6 +28,7 @@ return [
         'debug_desc' => 'Diagnostic mode for debugging and logging.',
         'version_desc' => 'Real-time version comparison with official repository.',
         'php_desc' => 'Runtime engine version for PHP.',
-        'laravel_desc' => 'Current version of the Laravel framework.',
-    ]
+        'laravel_desc' => 'Current version of the Laravel framework.'
+    ],
+    'view_update' => 'View Actualizar'
 ];

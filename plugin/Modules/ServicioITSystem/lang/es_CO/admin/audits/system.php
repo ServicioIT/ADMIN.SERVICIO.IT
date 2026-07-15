@@ -1,10 +1,12 @@
 <?php
 
 return [
-    'title' => 'System Logs',
-    'description' => 'Review detailed records of system logs.',
-
-    'event_label' => 'Event',
-    'actor_label' => 'Actor',
-    'properties_label' => 'Properties',
+    'description' => 'Revisar registros detallados de todas las actividades del sistema.',
+    'event_label' => 'Evento',
+    'ip_label' => 'Dirección IP',
+    'properties_label' => 'Propiedades',
+    'title' => 'Registros del Sistema',
+    'user_agent_label' => 'Agente de Usuario',
+    'user_label' => 'Usuario',
+    'actor_label' => 'Actor'
 ];

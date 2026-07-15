@@ -1,21 +1,34 @@
 <?php
 
 return [
-    'alert_label' => 'Updating this broadcast will resend emails',
-    'alert_helper' => 'Once you update this broadcast, the emails will be re-scheduled and sent again according to the defined schedule. Make sure your changes are final before saving.',
-    'subject_label' => 'Subject',
-    'subject_helper' => 'Enter the subject line for the email.',
-    'body_label' => 'Body',
-    'body_helper' => 'Write the content of the broadcast email. You can use placeholders to insert dynamic data.',
-    'recipient_group_label' => 'Recipients',
-    'recipient_group_helper' => 'Select the recipient group for this broadcast.',
-    'recipient_custom_helper' => 'Choose specific users to receive this broadcast email.',
+    'body_helper' => 'El contenido del correo electrónico que se enviará a todos los usuarios.',
+    'body_label' => 'Contenido',
+    'create' => [
+        'title' => 'Crear Difusión'
+    ],
+    'description' => 'Enviar correos electrónicos masivos a todos los usuarios.',
+    'edit' => [
+        'title' => 'Editar Difusión'
+    ],
+    'index' => [
+        'title' => 'Difusiones'
+    ],
+    'preview_label' => 'Vista Previa',
+    'send_to_all_users' => 'Enviar a todos los usuarios',
+    'sent_at_label' => 'Enviado',
+    'subject_helper' => 'La línea de asunto del correo electrónico de difusión.',
+    'subject_label' => 'Asunto',
+    'alert_label' => 'Actualizar esta difusión reenviará los correos',
+    'alert_helper' => 'Una vez que actualices esta difusión, los correos serán reprogramados y enviados nuevamente a todos los destinatarios.',
+    'recipient_group_label' => 'Destinatarios',
+    'recipient_group_helper' => 'Selecciona el grupo de destinatarios para esta difusión.',
+    'recipient_custom_helper' => 'Elige usuarios específicos para recibir este correo de difusión.',
     'cc_label' => 'CC',
-    'cc_helper' => 'Add one or more email addresses to receive a copy (CC) of this email.',
+    'cc_helper' => 'Agrega una o más direcciones de correo para recibir copia (CC) de este correo.',
     'bcc_label' => 'BCC',
-    'bcc_helper' => 'Add one or more email addresses to receive a blind copy (BCC) of this email.',
-    'schedule_label' => 'Schedule',
-    'schedule_helper' => 'Set a date and time to schedule when the broadcast email will be sent. Leave empty to send immediately.',
-    'placeholder_label' => 'Placeholders',
-    'placeholder_helper' => 'List of available placeholders you can use in the email subject or body.',
+    'bcc_helper' => 'Agrega una o más direcciones de correo para recibir copia oculta (BCC) de este correo.',
+    'schedule_label' => 'Programar',
+    'schedule_helper' => 'Establece una fecha y hora para programar el envío de la difusión. Déjalo vacío para enviar inmediatamente.',
+    'placeholder_label' => 'Marcadores',
+    'placeholder_helper' => 'Lista de marcadores disponibles que puedes usar en el asunto o cuerpo del correo.'
 ];

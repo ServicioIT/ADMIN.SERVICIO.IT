@@ -2,19 +2,19 @@
 
 return [
     'cycles' => [
-        'free' => 'Free',
-        'onetime' => 'One Time',
+        'free' => 'Gratis',
+        'onetime' => 'One Hora',
         'daily' => 'Daily',
         'weekly' => 'Weekly',
-        'monthly' => 'Monthly',
-        'yearly' => 'Annually',
+        'monthly' => 'Mensual',
+        'yearly' => 'Anual',
         'every' => 'Every :count :unit',
-        'setup_fee' => 'Setup Fee',
+        'setup_fee' => 'Setup Fee'
     ],
     'units' => [
         'daily' => 'Day(s)',
         'weekly' => 'Week(s)',
         'monthly' => 'Month(s)',
-        'yearly' => 'Year(s)',
-    ],
+        'yearly' => 'Year(s)'
+    ]
 ];

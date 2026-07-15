@@ -1,41 +1,39 @@
 <?php
 
 return [
-    'domain_label' => 'Domain',
-    'status_label' => 'Status',
-    'registrant_number_label' => 'Registrant Number',
-    'registration_date_label' => 'Registration Date',
+    'domain_label' => 'Dominio',
+    'status_label' => 'Estado',
+    'registrant_number_label' => 'Registrante Number',
+    'registration_date_label' => 'Registration Fecha',
     'expires_label' => 'Expires At',
     'auto_renew_label' => 'Auto Renew',
     'whois_privacy_label' => 'WHOIS Privacy',
-    'nameservers_label' => 'Nameservers',
+    'nameservers_label' => 'Nombreservers',
     'epp_code_label' => 'EPP Code',
-
     'action' => [
-        'overview' => 'Overview',
-        'nameservers' => 'Nameservers',
+        'overview' => 'Resumen',
+        'nameservers' => 'Nombreservers',
         'epp_code' => 'EPP Code',
         'whois_privacy' => 'WHOIS Privacy',
+        'failed' => 'Action failed: :message',
+        'invalid_type' => 'Invalid action type configured for rendering.',
+        'unavailable' => 'This action is not available for this domain.'
     ],
-
     'nameservers' => [
-        'updated' => 'Nameservers updated successfully.',
-        'failed' => 'Failed to update nameservers: :message',
+        'updated' => 'Nombreservers updated successfully.',
+        'failed' => 'Fallido to update nameservers: :message'
     ],
-
     'epp' => [
         'retrieved' => 'EPP code retrieved successfully.',
-        'failed' => 'Failed to retrieve EPP code: :message',
+        'failed' => 'Fallido to retrieve EPP code: :message'
     ],
-
     'privacy' => [
         'enabled' => 'WHOIS privacy enabled.',
         'disabled' => 'WHOIS privacy disabled.',
-        'failed' => 'Failed to update WHOIS privacy: :message',
+        'failed' => 'Fallido to update WHOIS privacy: :message'
     ],
-
     'auto_renew' => [
         'enabled' => 'Auto-renewal enabled.',
-        'disabled' => 'Auto-renewal disabled.',
-    ],
+        'disabled' => 'Auto-renewal disabled.'
+    ]
 ];

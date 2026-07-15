@@ -1,11 +1,11 @@
 <?php
 
 return [
-    'dashboard' => 'Dashboard',
-    'store' => 'Store',
-    'services' => 'Services',
-    'invoices' => 'Invoices',
+    'dashboard' => 'Panel',
+    'store' => 'Tienda',
+    'services' => 'Servicios',
+    'invoices' => 'Facturas',
     'tickets' => 'Tickets',
-    'domains' => 'Buy Domain',
-    'registrants' => 'Domains',
+    'domains' => 'Buy Dominio',
+    'registrants' => 'Dominios'
 ];

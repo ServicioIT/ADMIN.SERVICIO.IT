@@ -1,56 +1,74 @@
 <?php
 
 return [
-    'tabs' => [
-        'summary' => 'Summary',
-        'options' => 'Options',
+    'create' => [
+        'title' => 'Crear Variante'
     ],
-
-    'name_label' => 'Name',
-    'name_helper' => 'Enter the name of the package variant.',
-    'description_label' => 'Description',
-    'description_helper' => 'Internal notes or description for this variant. This content is only visible to admin.',
-    'type_label' => 'Type',
-    'type_helper' => 'Select the type of this variant.',
+    'description' => 'Gestionar variantes de productos con opciones configurables.',
+    'edit' => [
+        'title' => 'Editar Variante'
+    ],
+    'index' => [
+        'title' => 'Variantes'
+    ],
+    'option' => [
+        'create' => [
+            'title' => 'Crear Opción'
+        ],
+        'edit' => [
+            'title' => 'Editar Opción'
+        ],
+        'index' => [
+            'title' => 'Opciones'
+        ]
+    ],
+    'tabs' => [
+        'summary' => 'Resumen',
+        'options' => 'Options'
+    ],
+    'name_label' => 'Nombre',
+    'name_helper' => 'Nombre de la variante.',
+    'description_label' => 'Descripción',
+    'description_helper' => 'Descripción de esta variante.',
+    'type_label' => 'Tipo',
+    'type_helper' => 'Tipo de selección para esta variante.',
     'code_label' => 'Code',
     'code_helper' => 'Enter a identifier used by the system to reference this item. This value should be short and consistent.',
-    'status_label' => 'Status',
+    'status_label' => 'Estado',
     'status_helper' => 'Set the status of the variant to visible or hidden.',
     'status_options' => [
         'visible' => 'Visible',
-        'hidden' => 'Hidden',
+        'hidden' => 'Hidden'
     ],
     'is_scalable_label' => 'Is Scalable?',
-    'is_scalable_helper' => 'Enable to allow this variant to be scaling.',
-    'package_label' => 'Package',
-    'package_helper' => 'Select the package this variant belongs to.',
-
+    'is_scalable_helper' => 'Activar to allow this variant to be scaling.',
+    'package_label' => 'Paquete',
+    'package_helper' => 'El paquete al que pertenece esta variante.',
     'options' => [
         'add_new_price_label' => 'Add new price',
         'pricing_label' => 'Pricing',
         'pricing_helper' => 'Manage the pricing options for this variant.',
-        'name_label' => 'Name',
+        'name_label' => 'Nombre',
         'name_helper' => 'Enter the name of the variant option.',
         'value_label' => 'Value',
         'value_helper' => 'Enter the value of the variant option.',
-
         'pricing' => [
-            'name_label' => 'Name',
+            'name_label' => 'Nombre',
             'name_helper' => 'Enter the name for this pricing option.',
-            'type_label' => 'Type',
+            'type_label' => 'Tipo',
             'type_helper' => 'Select the type of pricing for this variant option.',
-            'time_interval_label' => 'Time Interval',
+            'time_interval_label' => 'Hora Interval',
             'time_interval_helper' => 'Choose the billing interval for this pricing option.',
-            'billing_period_label' => 'Billing Period',
+            'billing_period_label' => 'Facturación Period',
             'billing_period_helper' => 'Select how often the customer will be billed for this variant option.',
-            'currency_code_label' => 'Currency Code',
+            'currency_code_label' => 'Moneda Code',
             'currency_code_helper' => 'Displays the currency used for this price. This value cannot be changed here.',
-            'price_label' => 'Price',
+            'price_label' => 'Precio',
             'price_helper' => 'Set the price for this variant option in the selected currency.',
             'setup_fee_label' => 'Setup Fee',
             'setup_fee_helper' => 'Enter any one-time setup fee for this pricing option.',
-            'enabled_label' => 'Enabled?',
-            'enabled_helper' => 'Enable or disable this pricing option without deleting it.',
+            'enabled_label' => 'Activard?',
+            'enabled_helper' => 'Activar or disable this pricing option without deleting it.'
         ]
     ]
 ];

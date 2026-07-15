@@ -1,10 +1,11 @@
 <?php
 
 return [
-    'title' => 'User Activity',
-    'description' => 'Review detailed records of user activities.',
-
-    'event_label' => 'Event',
-    'user_label' => 'User',
-    'properties_label' => 'Properties',
+    'description' => 'Revisar registros detallados de todas las actividades de usuarios.',
+    'event_label' => 'Evento',
+    'ip_label' => 'Dirección IP',
+    'properties_label' => 'Propiedades',
+    'title' => 'Registros de Usuarios',
+    'user_agent_label' => 'Agente de Usuario',
+    'user_label' => 'Usuario'
 ];
