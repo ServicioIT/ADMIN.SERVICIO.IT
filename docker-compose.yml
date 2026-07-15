@@ -49,21 +49,6 @@ services:
       - traefik.docker.network=dokploy-network
       - traefik.enable=true
 
-      # HTTP → HTTPS redirect
-      - traefik.http.routers.admin-web.rule=Host(`admin.servicio.it`)
-      - traefik.http.routers.admin-web.entrypoints=web
-      - traefik.http.routers.admin-web.middlewares=redirect-to-https@file
-      - traefik.http.routers.admin-web.service=admin-servicio-it
-
-      # HTTPS
-      - traefik.http.routers.admin-websecure.rule=Host(`admin.servicio.it`)
-      - traefik.http.routers.admin-websecure.entrypoints=websecure
-      - traefik.http.routers.admin-websecure.tls.certresolver=letsencrypt
-      - traefik.http.routers.admin-websecure.service=admin-servicio-it
-
-      # Service (puerto interno 8080 = serversideup/php)
-      - traefik.http.services.admin-servicio-it.loadbalancer.server.port=8080
-
 volumes:
   admin-servicio-it-db: {}
   admin-servicio-it-storage: {}
