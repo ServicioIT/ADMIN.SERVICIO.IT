@@ -18,6 +18,9 @@ FROM ghcr.io/billmora/billmora:1.0.0
 
 USER root
 
+# Copiar traducciones español (es_CO = es_ES del repo, con flag Colombia)
+COPY lang/es_CO/ /var/www/html/lang/es_CO/
+
 # Copiar módulos custom de SERVICIO IT
 COPY plugin/Modules/ServicioITSystem/ /var/www/html/plugin/Modules/ServicioITSystem/
 
@@ -28,7 +31,9 @@ COPY bootstrap/custom-providers.php /var/www/html/bootstrap/custom-providers.php
 COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
 
 # Asegurar permisos
-RUN chown -R www-data:www-data /var/www/html/plugin/Modules/ServicioITSystem/ \
+RUN chown -R www-data:www-data /var/www/html/lang/es_CO/ \
+    && chown -R www-data:www-data /var/www/html/plugin/Modules/ServicioITSystem/ \
+    && chmod -R 755 /var/www/html/lang/es_CO/ \
     && chmod -R 755 /var/www/html/plugin/Modules/ServicioITSystem/
 
 # Puerto ya expuesto por la imagen base (8080)
