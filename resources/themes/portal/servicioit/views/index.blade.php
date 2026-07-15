@@ -38,23 +38,6 @@
     </div>
 </section>
 
-{{-- ITSM SECTION --}}
-<section class="bg-white py-20 border-y border-slate-100">
-    <div class="max-w-5xl mx-auto px-4 grid gap-8">
-        <div class="grid gap-3">
-            <span class="text-billmora-primary-500 font-bold text-6xl">01</span>
-            <h2 class="text-3xl font-bold text-slate-800">Information Technology Service Management (ITSM)</h2>
-            <p class="text-lg text-slate-600 leading-relaxed">
-                ITSM incluye todas las actividades y procesos discretos que respaldan un servicio a lo largo de su ciclo de vida, desde la gestión de servicios hasta la gestión de cambios, la gestión de problemas e incidentes, la gestión de activos y la gestión del conocimiento.
-            </p>
-        </div>
-        <div class="bg-billmora-neutral-50 border-l-4 border-billmora-primary-500 rounded-r-xl p-6 grid gap-2">
-            <p class="text-lg text-slate-700 font-semibold">¿Tienes un servicio y no funciona como debería?</p>
-            <a href="mailto:soporte@servicio.it" class="text-billmora-primary-500 font-semibold hover:underline">¡Contáctanos y con gusto te ayudaremos!</a>
-        </div>
-    </div>
-</section>
-
 {{-- CATALOGS SECTION --}}
 <section class="py-20">
     <div class="max-w-7xl mx-auto px-4 grid gap-10">
@@ -135,43 +118,6 @@
                     </button>
                 </div>
             @endif
-        </div>
-    </div>
-</section>
-
-{{-- WHAT WE DO SECTION --}}
-<section class="bg-white py-20 border-y border-slate-100">
-    <div class="max-w-5xl mx-auto px-4 grid gap-8">
-        <div class="grid gap-3">
-            <span class="text-billmora-primary-500 font-bold text-6xl">02</span>
-            <h2 class="text-3xl font-bold text-slate-800">¿Qué es un Servicio Digital?</h2>
-            <p class="text-lg text-slate-600 leading-relaxed">
-                Un servicio de IT permite el acceso a la información y los procesos para lograr importantes objetivos comerciales o proporcionar valor. Los servicios de IT incluyen la implementación y el soporte de aplicaciones empresariales, como <strong>Servidores WEB</strong> y/o de <strong>CORREO</strong>; diseñar y optimizar la infraestructura de IT, como el <strong>almacenamiento</strong>, las <strong>redes</strong> y los recursos en la <strong>nube</strong>.
-            </p>
-        </div>
-
-        <div class="grid md:grid-cols-3 gap-6 mt-4">
-            <div class="grid gap-2 p-6 rounded-xl bg-billmora-neutral-50">
-                <div class="w-12 h-12 rounded-lg bg-billmora-primary-500/10 flex items-center justify-center">
-                    <x-lucide-server class="w-6 h-6 text-billmora-primary-500" />
-                </div>
-                <h3 class="font-bold text-slate-800 text-lg mt-2">Infraestructura</h3>
-                <p class="text-slate-500 text-sm">Servidores, hosting, almacenamiento y recursos en la nube.</p>
-            </div>
-            <div class="grid gap-2 p-6 rounded-xl bg-billmora-neutral-50">
-                <div class="w-12 h-12 rounded-lg bg-billmora-primary-500/10 flex items-center justify-center">
-                    <x-lucide-mail class="w-6 h-6 text-billmora-primary-500" />
-                </div>
-                <h3 class="font-bold text-slate-800 text-lg mt-2">Correos</h3>
-                <p class="text-slate-500 text-sm">Implementación y soporte de correo empresarial profesional.</p>
-            </div>
-            <div class="grid gap-2 p-6 rounded-xl bg-billmora-neutral-50">
-                <div class="w-12 h-12 rounded-lg bg-billmora-primary-500/10 flex items-center justify-center">
-                    <x-lucide-code class="w-6 h-6 text-billmora-primary-500" />
-                </div>
-                <h3 class="font-bold text-slate-800 text-lg mt-2">Desarrollos</h3>
-                <p class="text-slate-500 text-sm">Aplicaciones web y soluciones a medida para tu negocio.</p>
-            </div>
         </div>
     </div>
 </section>
