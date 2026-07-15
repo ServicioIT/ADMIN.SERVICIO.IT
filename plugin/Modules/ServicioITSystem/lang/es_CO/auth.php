@@ -2,21 +2,21 @@
 
 return [
     'page' => [
-        'login' => 'Iniciar Sesión to your Cuenta',
-        'register' => 'Registrarse your Cuenta',
-        'forgot_password' => 'Request Restablecer Contraseña',
-        'reset_password' => 'Actualizar your Contraseña'
+        'login' => 'Inicia sesión en tu cuenta',
+        'register' => 'Registra tu cuenta',
+        'forgot_password' => 'Solicitar restablecer contraseña',
+        'reset_password' => 'Actualiza tu contraseña'
     ],
-    'remembered_password' => 'Already remembered your password?',
-    'remember_me' => 'Remember me',
-    'forgot_password' => 'Forgot Contraseña?',
+    'remembered_password' => '¿Ya recordaste tu contraseña?',
+    'remember_me' => 'Recordarme',
+    'forgot_password' => '¿Olvidaste tu contraseña?',
     'have_account' => '¿Ya tienes una cuenta?',
     'dont_have_account' => '¿No tienes una cuenta?',
-    'invalid_credentials' => 'No account matching those credentials could be found.',
-    'account_suspended' => 'Your account has been suspended. Please contact support for more information.',
+    'invalid_credentials' => 'No se encontró una cuenta con esas credenciales.',
+    'account_suspended' => 'Tu cuenta ha sido suspendida. Contacta a soporte para más información.',
     'account_closed' => 'Tu cuenta ha sido cerrada.',
-    'registration_successful' => 'Thank you for registering. We have sent you an email for verification. Please check your inbox and follow the instructions to verify your email.',
-    'registration_disabled' => 'Usuario registration is currently disabled. New accounts cannot be created at this time.',
+    'registration_successful' => 'Gracias por registrarte. Te enviamos un correo de verificación. Revisa tu bandeja de entrada.',
+    'registration_disabled' => 'El registro de usuarios está desactivado. New accounts cannot be created at this time.',
     'email' => [
         'not_verified' => 'Your email has not been verified. Please check your inbox or resend the verification email.',
         'has_verified' => 'Your email has been successfully verified. You can sign in now.',
