@@ -1,0 +1,10 @@
+{
+    "provider": "servicioit",
+    "name": "SERVICIO IT",
+    "type": "admin",
+    "version": "1.0.0",
+    "author": "SERVICIO IT",
+    "url": "https://servicio.it",
+    "assets": "/themes/admin/servicioit",
+    "preview": "https://media.billmora.com/image/admin-dashboard.png"
+}

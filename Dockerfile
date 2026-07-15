@@ -1,40 +1,60 @@
 # =====================================================================
-# ADMIN.SERVICIO.IT — Dockerfile custom (extiende imagen oficial Billmora)
+# ADMIN.SERVICIO.IT — Dockerfile multi-stage
 # =====================================================================
-# Hereda la imagen pre-compilada de Billmora y agrega los módulos custom
-# de SERVICIO IT sin modificar el core ni recompilar assets.
-#
-# La imagen base ya contiene:
-#   - Laravel 12 + PHP 8.3 FPM + Nginx (serversideup/php)
-#   - Dependencias Composer instaladas
-#   - Assets Vite compilados (admin, client, portal themes)
-#   - Entrypoint que genera APP_KEY si no existe
-#
-# Build:  docker build -t admin-servicio-it:custom .
-# Deploy: Dokploy usa este Dockerfile automáticamente (build: .)
+# Stage 1: Compila assets del tema SERVICIO IT (Node.js + Vite)
+# Stage 2: Imagen final (hereda Billmora oficial + módulos + tema custom)
 # =====================================================================
 
+# ---- Stage 1: Build SERVICIO IT Theme Assets ----
+FROM node:22-alpine AS theme-builder
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm ci
+
+# Copy theme source files
+COPY resources/themes/admin/servicioit/ resources/themes/admin/servicioit/
+COPY resources/themes/client/servicioit/ resources/themes/client/servicioit/
+COPY resources/themes/portal/servicioit/ resources/themes/portal/servicioit/
+
+# Build each theme
+RUN npx vite build --config=resources/themes/admin/servicioit/vite.config.js && \
+    npx vite build --config=resources/themes/client/servicioit/vite.config.js && \
+    npx vite build --config=resources/themes/portal/servicioit/vite.config.js
+
+# ---- Stage 2: Production Image ----
 FROM ghcr.io/billmora/billmora:1.0.0
 
 USER root
 
-# Copiar traducciones español (es_CO = es_ES del repo, con flag Colombia)
+# Copy compiled theme assets from builder
+COPY --from=theme-builder /app/public/themes/admin/servicioit/ /var/www/html/public/themes/admin/servicioit/
+COPY --from=theme-builder /app/public/themes/client/servicioit/ /var/www/html/public/themes/client/servicioit/
+COPY --from=theme-builder /app/public/themes/portal/servicioit/ /var/www/html/public/themes/portal/servicioit/
+
+# Copy theme source (for registration)
+COPY resources/themes/admin/servicioit/theme.json /var/www/html/resources/themes/admin/servicioit/theme.json
+COPY resources/themes/client/servicioit/theme.json /var/www/html/resources/themes/client/servicioit/theme.json
+COPY resources/themes/portal/servicioit/theme.json /var/www/html/resources/themes/portal/servicioit/theme.json
+
+# Copy traducciones español
 COPY lang/es_CO/ /var/www/html/lang/es_CO/
 
-# Copiar módulos custom de SERVICIO IT
+# Copy módulos custom SERVICIO IT
 COPY plugin/Modules/ServicioITSystem/ /var/www/html/plugin/Modules/ServicioITSystem/
 
-# Copiar providers custom (archivo nuevo — no existe upstream)
+# Copy providers custom
 COPY bootstrap/custom-providers.php /var/www/html/bootstrap/custom-providers.php
-
-# Copiar providers.php modificado (agrega include de custom-providers.php)
 COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
 
-# Asegurar permisos
-RUN chown -R www-data:www-data /var/www/html/lang/es_CO/ \
-    && chown -R www-data:www-data /var/www/html/plugin/Modules/ServicioITSystem/ \
-    && chmod -R 755 /var/www/html/lang/es_CO/ \
-    && chmod -R 755 /var/www/html/plugin/Modules/ServicioITSystem/
+# Permisos
+RUN chown -R www-data:www-data /var/www/html/public/themes/admin/servicioit/ \
+    /var/www/html/public/themes/client/servicioit/ \
+    /var/www/html/public/themes/portal/servicioit/ \
+    /var/www/html/lang/es_CO/ \
+    /var/www/html/plugin/Modules/ServicioITSystem/ \
+    && chmod -R 755 /var/www/html/public/themes/ \
+    /var/www/html/lang/es_CO/ \
+    /var/www/html/plugin/Modules/ServicioITSystem/
 
-# Puerto ya expuesto por la imagen base (8080)
-# Entrypoint y CMD se heredan de la imagen oficial
+EXPOSE 8080

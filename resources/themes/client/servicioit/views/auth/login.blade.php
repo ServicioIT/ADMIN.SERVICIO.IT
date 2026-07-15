@@ -1,0 +1,92 @@
+@section('title', __('common.login'))
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('client::layouts.meta')
+</head>
+<body class="bg-white">
+    <div class="flex flex-col lg:flex-row-reverse w-full min-h-dvh">
+        <form action="{{ route('client.login.store') }}" method="POST" class="w-full lg:w-1/2 h-auto p-6">
+            @csrf
+            <div class="max-w-120 h-full flex flex-col justify-between mx-auto">
+                <a href="{{ route('portal.home') }}" class="flex gap-2 items-center mb-8 lg:mb-0 text-slate-500 font-semibold">
+                    <x-lucide-chevron-left class="w-auto h-5" />
+                    <span>{{ __('common.back_to', ['page' => __('common.page.portal')]) }}</span>
+                </a>
+                <div class="grid gap-6 my-auto">
+                    @if (session('success'))
+                        <x-client::alert variant="success" title="{{ session('success') }}" />
+                    @endif
+                    @if (session('warning'))
+                        <x-client::alert variant="warning" title="{{ session('warning') }}" />
+                    @endif
+                    @if (session('error'))
+                        <x-client::alert variant="danger" title="{{ session('error') }}">
+                            @if (session('email_token'))
+                                <button type="button" onclick="document.getElementById('resendEmail').submit()" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 ml-auto px-3 py-2 text-white font-semibold rounded-lg transition duration-150 cursor-pointer">{{ __('common.resend') }}</button>
+                            @endif
+                        </x-client::alert>
+                    @endif
+                    <h3 class="font-semibold text-xl text-slate-700">{{ __('auth.page.login') }}</h3>
+                    <div class="grid gap-3">
+                        <x-client::input type="email" name="email" label="{{ __('common.email') }}" required />
+                        <x-client::input type="password" name="password" label="{{ __('common.password') }}" required />
+                        <div class="flex items-center justify-between">
+                            <label class="flex items-center gap-2 cursor-pointer">
+                                <input type="checkbox" name="remember" class="w-4 h-4 accent-billmora-primary-500 text-red border-2 outline-none focus:ring-2 ring-billmora-primary-500 cursor-pointer">
+                                <span class="text-sm text-slate-600">{{ __('auth.remember_me') }}</span>
+                            </label>
+                            <a href="{{ route('client.password.forgot') }}" class="text-billmora-primary-500 hover:text-billmora-primary-600 font-semibold">{{ __('auth.forgot_password') }}</a>
+                        </div>
+                        <x-client::captcha form="login_form" class="mx-auto" />
+                    </div>
+                    <button type="submit" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 px-3 py-2 text-white font-semibold rounded-lg transition duration-150 cursor-pointer">{{ __('common.sign_in') }}</button>
+                    @if (Billmora::getAuth('oauth_google_enabled') || Billmora::getAuth('oauth_discord_enabled') || Billmora::getAuth('oauth_github_enabled'))
+                        <div class="flex items-center gap-4">
+                            <div class="flex-1 h-px bg-slate-200"></div>
+                            <span class="text-sm text-slate-400">{{ __('auth.oauth.or_continue_with') }}</span>
+                            <div class="flex-1 h-px bg-slate-200"></div>
+                        </div>
+                        <div class="flex gap-3">
+                            @if (Billmora::getAuth('oauth_google_enabled'))
+                                <a href="{{ route('client.oauth.redirect', ['provider' => 'google']) }}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-billmora-neutral-100 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-150">
+                                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="google icon" class="w-5 h-5">
+                                    <span class="text-sm font-semibold">Google</span>
+                                </a>
+                            @endif
+                            @if (Billmora::getAuth('oauth_discord_enabled'))
+                                <a href="{{ route('client.oauth.redirect', ['provider' => 'discord']) }}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-billmora-neutral-100 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-150">
+                                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="google icon" class="w-5 h-5">
+                                    <span class="text-sm font-semibold">Discord</span>
+                                </a>
+                            @endif
+                            @if (Billmora::getAuth('oauth_github_enabled'))
+                                <a href="{{ route('client.oauth.redirect', ['provider' => 'github']) }}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-billmora-neutral-100 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-150">
+                                    <img src="https://www.svgrepo.com/show/394174/github.svg" alt="google icon" class="w-5 h-5">
+                                    <span class="text-sm font-semibold">GitHub</span>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+                    <span class="text-slate-600">{{ __('auth.dont_have_account') }} <a href="{{ route('client.register') }}" class="text-billmora-primary-500 hover:text-billmora-primary-600 font-semibold">{{ __('common.sign_up') }}</a></span>
+                </div>
+            </div>
+        </form>
+        <div class="w-auto max-w-120 lg:max-w-none lg:w-1/2 h-auto lg:flex justify-center bg-billmora-primary-500 m-8 lg:m-0 mx-8 sm:mx-auto rounded-2xl lg:rounded-none lg:rounded-br-[100px]">
+            <div class="max-w-120 my-8 lg:my-auto mx-8 space-y-5">
+                <img src="{{ $clientThemeConfig['auth_logo_url'] }}" alt="brand logo" class="w-auto h-24">
+                <span class="text-xl md:text-2xl lg:text-3xl font-bold text-white">{{ $clientThemeConfig['auth_message_title'] }}</span>
+                <p class="text-slate-200">{{ $clientThemeConfig['auth_message_description'] }}</p>
+            </div>
+        </div>
+    </div>
+    <form id="resendEmail" action="{{ route('client.email.resend') }}" method="POST">
+        @csrf
+        <input type="hidden" name="email_token" value="{{ session('email_token') }}">
+    </form>
+    @livewireScripts
+</body>
+</html>

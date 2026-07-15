@@ -1,0 +1,222 @@
+@section('title', __('common.register'))
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('client::layouts.meta')
+</head>
+<body class="bg-white">
+    <div class="flex flex-col lg:flex-row-reverse w-full min-h-dvh lg:items-start p-8 lg:p-0">
+        <form action="{{ route('client.register.store') }}" method="POST" class="w-full lg:w-1/2 h-auto lg:p-8">
+            @csrf
+            <div class="max-w-180 h-full flex flex-col justify-between mx-auto">
+                <a href="{{ route('portal.home') }}" class="flex gap-2 items-center mb-10 lg:mb-0 text-slate-500 font-semibold">
+                    <x-lucide-chevron-left class="w-auto h-5" />
+                    <span>{{ __('common.back_to', ['page' => __('common.page.portal')]) }}</span>
+                </a>
+                <div class="grid gap-6 my-10 lg:my-20">
+                    @if (session('success'))
+                        <x-client::alert variant="success" title="{{ session('success') }}" />
+                    @endif
+                    @if (session('error'))
+                        <x-client::alert variant="danger" title="{{ session('error') }}" />
+                    @endif
+                    <h3 class="mb-2 font-semibold text-2xl text-slate-700">{{ __('auth.page.register') }}</h3>
+                    <div class="grid gap-4">
+                        <h4 class="text-xl font-semibold text-slate-700">{{ __('common.personal_information') }}</h4>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'first_name'))
+                                <x-client::input 
+                                    type="text" 
+                                    name="first_name" 
+                                    label="{{ __('common.first_name') }}" 
+                                    value="{{ old('first_name') }}" 
+                                    required
+                                />
+                            @endunless
+                            @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'last_name'))
+                                <x-client::input 
+                                    type="text" 
+                                    name="last_name" 
+                                    label="{{ __('common.last_name') }}" 
+                                    value="{{ old('last_name') }}" 
+                                    required
+                                />
+                            @endunless
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'email'))
+                                <x-client::input 
+                                    type="email" 
+                                    name="email" 
+                                    label="{{ __('common.email') }}" 
+                                    value="{{ old('email') }}" 
+                                    required
+                                />
+                            @endunless
+                            @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'phone_number'))
+                                <x-client::input 
+                                    type="tel" 
+                                    name="phone_number" 
+                                    label="{{ __('common.phone_number') }}" 
+                                    value="{{ old('phone_number') }}" 
+                                    :required="Billmora::hasAuth('user_billing_required_inputs', 'phone_number')" 
+                                />
+                            @endunless
+                        </div>
+                    </div>
+                    @if (!collect([
+                            'phone_number',
+                            'company_name',
+                            'street_address_1',
+                            'street_address_2',
+                            'city',
+                            'state',
+                            'postcode',
+                            'country',
+                        ])->every(fn($field) => Billmora::hasAuth('user_registration_disabled_inputs', $field)))
+                        <div class="grid gap-4">
+                            <h4 class="text-xl font-semibold text-slate-700">{{ __('common.billing_information') }}</h4>
+                            @if (!collect([
+                                'company_name',
+                                'street_address_1',
+                            ])->every(fn($field) => Billmora::hasAuth('user_registration_disabled_inputs', $field)))
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'company_name'))
+                                    <x-client::input 
+                                        type="text" 
+                                        name="company_name" 
+                                        label="{{ __('common.company_name') }}" 
+                                        value="{{ old('company_name') }}" 
+                                        :required="Billmora::hasAuth('user_billing_required_inputs', 'company_name')" 
+                                    />
+                                @endunless
+                                @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'street_address_1'))
+                                    <x-client::input 
+                                        type="text" 
+                                        name="street_address_1" 
+                                        label="{{ __('common.street_address_1') }}" 
+                                        value="{{ old('street_address_1') }}" 
+                                        :required="Billmora::hasAuth('user_billing_required_inputs', 'street_address_1')" 
+                                    />
+                                @endunless
+                            </div>
+                            @endif
+                            @if (!collect([
+                                'street_address_2',
+                                'city',
+                            ])->every(fn($field) => Billmora::hasAuth('user_registration_disabled_inputs', $field)))
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'street_address_2'))
+                                    <x-client::input 
+                                        type="text" 
+                                        name="street_address_2" 
+                                        label="{{ __('common.street_address_2') }}" 
+                                        value="{{ old('street_address_2') }}" 
+                                        :required="Billmora::hasAuth('user_billing_required_inputs', 'street_address_2')" 
+                                    />
+                                @endunless
+                                @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'city'))
+                                    <x-client::input 
+                                        type="text" 
+                                        name="city" 
+                                        label="{{ __('common.city') }}" 
+                                        value="{{ old('city') }}" 
+                                        :required="Billmora::hasAuth('user_billing_required_inputs', 'city')" 
+                                    />
+                                @endunless
+                            </div>
+                            @endif
+                            @if (!collect([
+                                'state',
+                                'postcode',
+                            ])->every(fn($field) => Billmora::hasAuth('user_registration_disabled_inputs', $field)))
+                            <div class="flex flex-col sm:flex-row gap-4">
+                                @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'state'))
+                                    <x-client::input 
+                                        type="text" 
+                                        name="state" 
+                                        label="{{ __('common.state') }}" 
+                                        value="{{ old('state') }}" 
+                                        :required="Billmora::hasAuth('user_billing_required_inputs', 'state')" 
+                                    />
+                                @endunless
+                                @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'postcode'))
+                                    <x-client::input 
+                                        type="number" 
+                                        name="postcode" 
+                                        label="{{ __('common.postcode') }}" 
+                                        value="{{ old('postcode') }}" 
+                                        :required="Billmora::hasAuth('user_billing_required_inputs', 'postcode')" 
+                                    />
+                                @endunless
+                            </div>
+                            @endif
+                            @unless(Billmora::hasAuth('user_registration_disabled_inputs', 'country'))
+                                <x-client::select 
+                                    name="country" 
+                                    label="{{ __('common.country') }}" 
+                                    :required="Billmora::hasAuth('user_billing_required_inputs', 'country')"
+                                >
+                                    @foreach (config('utils.countries') as $country => $label)
+                                        <option value="{{ $country }}" {{ old('country') == $country ? 'selected' : '' }}>
+                                            {{ $label }}
+                                        </option>
+                                    @endforeach
+                                </x-client::select>
+                            @endunless
+                        </div>
+                    @endif
+                    <div class="grid gap-4">
+                        <h4 class="text-xl font-semibold text-slate-700">{{ __('common.security_information') }}</h4>
+                        <div class="flex flex-col sm:flex-row gap-4">
+                            <x-client::input type="password" name="password" label="{{ __('common.password') }}" required />
+                            <x-client::input type="password" name="password_confirmation" label="{{ __('common.confirm_password') }}" required />
+                        </div>
+                    </div>
+                    <x-client::captcha form="register_form" class="mx-auto" />
+                    <button type="submit" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 px-3 py-2 text-white font-semibold rounded-lg transition duration-150 cursor-pointer">{{ __('common.sign_up') }}</button>
+                    @if (Billmora::getAuth('oauth_google_enabled') || Billmora::getAuth('oauth_discord_enabled') || Billmora::getAuth('oauth_github_enabled'))
+                        <div class="flex items-center gap-4">
+                            <div class="flex-1 h-px bg-slate-200"></div>
+                            <span class="text-sm text-slate-400">{{ __('auth.oauth.or_continue_with') }}</span>
+                            <div class="flex-1 h-px bg-slate-200"></div>
+                        </div>
+                        <div class="flex gap-3">
+                            @if (Billmora::getAuth('oauth_google_enabled'))
+                                <a href="{{ route('client.oauth.redirect', ['provider' => 'google']) }}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-billmora-neutral-100 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-150">
+                                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="google icon" class="w-5 h-5">
+                                    <span class="text-sm font-semibold">Google</span>
+                                </a>
+                            @endif
+                            @if (Billmora::getAuth('oauth_discord_enabled'))
+                                <a href="{{ route('client.oauth.redirect', ['provider' => 'discord']) }}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-billmora-neutral-100 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-150">
+                                    <img src="https://www.svgrepo.com/show/353655/discord-icon.svg" alt="google icon" class="w-5 h-5">
+                                    <span class="text-sm font-semibold">Discord</span>
+                                </a>
+                            @endif
+                            @if (Billmora::getAuth('oauth_github_enabled'))
+                                <a href="{{ route('client.oauth.redirect', ['provider' => 'github']) }}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 border-2 border-billmora-neutral-100 rounded-lg text-slate-700 hover:bg-slate-50 transition duration-150">
+                                    <img src="https://www.svgrepo.com/show/394174/github.svg" alt="google icon" class="w-5 h-5">
+                                    <span class="text-sm font-semibold">GitHub</span>
+                                </a>
+                            @endif
+                        </div>
+                    @endif
+                    <span class="text-slate-600">{{ __('auth.have_account') }} <a href="{{ route('client.login') }}" class="text-billmora-primary-500 hover:text-billmora-primary-600 font-semibold">{{ __('common.sign_in') }}</a></span>
+                </div>
+            </div>
+        </form>
+        <div class="sticky top-0 w-auto max-w-180 lg:max-w-none lg:w-1/2 h-auto lg:h-dvh lg:flex justify-center bg-billmora-primary-500 mx-auto rounded-2xl lg:rounded-none lg:rounded-br-[100px]">
+            <div class="max-w-180 my-8 lg:my-auto mx-8 space-y-6">
+                <img src="{{ $clientThemeConfig['auth_logo_url'] }}" alt="brand logo" class="w-auto h-32">
+                <span class="text-2xl md:text-3xl lg:text-4xl font-bold text-white">{{ $clientThemeConfig['auth_message_title'] }}</span>
+                <p class="text-slate-200">{{ $clientThemeConfig['auth_message_description'] }}</p>
+            </div>
+        </div>
+    </div>
+    @livewireScripts
+</body>
+</html>

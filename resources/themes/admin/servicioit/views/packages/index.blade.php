@@ -1,0 +1,114 @@
+@extends('admin::layouts.app')
+
+@section('title', 'Product Packages')
+
+@section('body')
+<div class="flex flex-col gap-6">
+    {{-- Top bar: search + create --}}
+    <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+        <div class="w-full md:w-100">
+            <form action="{{ route('admin.packages') }}" method="GET" class="relative inline-block max-w-150 w-full group">
+                <div class="absolute top-1/2 -translate-y-1/2 left-2.5 pointer-events-none">
+                    <x-lucide-search class="w-5 h-auto text-slate-500 group-focus-within:text-billmora-primary-500" />
+                </div>
+                <input type="text" name="search" id="search" placeholder="{{ __('admin/common.search') }}" value="{{ request('search') }}" class="w-full px-6 py-3 pl-10 bg-white text-slate-700 placeholder:text-slate-500 border-2 border-billmora-neutral-100 rounded-xl group-focus-within:outline-2 outline-billmora-primary-500">
+                <div class="absolute top-1/2 -translate-y-1/2 right-1.5">
+                    <button type="submit" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 px-3 py-1.5 text-white rounded-lg transition duration-300 cursor-pointer">{{ __('common.submit') }}</button>
+                </div>
+            </form>
+        </div>
+        @can('packages.create')
+            <a href="{{ route('admin.packages.create') }}" class="flex gap-1 items-center bg-billmora-primary-500 hover:bg-billmora-primary-600 px-3 py-2 ml-auto text-white rounded-lg transition-colors ease-in-out duration-150 cursor-pointer">
+                <x-lucide-plus class="w-auto h-5" />
+                {{ __('common.create') }}
+            </a>
+        @endcan
+    </div>
+
+    {{-- Grouped tables per catalog --}}
+    @forelse($groupedPackages as $catalogName => $catalogPackages)
+    <div class="flex flex-col gap-2" data-sortable-wrapper>
+        {{-- Catalog group header --}}
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-billmora-primary-500"></div>
+                <h2 class="text-sm font-bold text-slate-700 uppercase tracking-wider">{{ $catalogName }}</h2>
+            </div>
+            <div class="flex-1 h-px bg-billmora-neutral-100"></div>
+        </div>
+        {{-- Packages table for this catalog --}}
+        <div class="overflow-x-auto">
+            <div class="min-w-full inline-block align-middle">
+                <div class="border-2 border-billmora-neutral-100 rounded-2xl overflow-hidden">
+                    <table class="min-w-full divide-y divide-billmora-neutral-100">
+                        <thead class="bg-billmora-neutral-100">
+                            <tr>
+                                <th scope="col" class="w-10 px-4 py-4"></th>
+                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-slate-500 uppercase">{{ __('admin/packages.name_label') }}</th>
+                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-slate-500 uppercase">{{ __('admin/packages.slug_label') }}</th>
+                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-slate-500 uppercase">{{ __('admin/packages.status_label') }}</th>
+                                <th scope="col" class="px-6 py-4 text-start text-xs font-semibold text-slate-500 uppercase">{{ __('common.created_at') }}</th>
+                                <th scope="col" class="px-6 py-4 text-end text-xs font-semibold text-slate-500 uppercase">{{ __('common.action') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y-2 divide-billmora-neutral-100 bg-white" data-sortable="Package">
+                            @forelse ($catalogPackages as $package)
+                            <tr data-id="{{ $package->id }}">
+                                <td class="px-4 py-4 whitespace-nowrap text-slate-300">
+                                    <x-lucide-grip-vertical class="w-5 h-5 drag-handle" />
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800">{{ $package->name }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800">{{ $package->slug }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800">{{ $package->status }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-800">{{ $package->created_at->format(Billmora::getGeneral('company_date_format')) }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-end text-sm font-medium space-x-2">
+                                    @can('packages.update')
+                                        <a href="{{ route('admin.packages.edit', ['package' => $package->id]) }}" class="inline-flex items-center text-sm font-semibold text-billmora-primary-500 hover:text-billmora-primary-hover">
+                                            {{ __('common.edit') }}
+                                        </a>
+                                    @endcan
+                                    @can('packages.delete')
+                                        <x-admin::modal.trigger modal="deleteModal-{{ $package->id }}" variant="open" class="inline-flex items-center text-sm font-semibold text-red-400 hover:text-red-500 cursor-pointer">{{ __('common.delete') }}</x-admin::modal.trigger>
+                                    @endcan
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-8 text-center text-sm text-slate-400">{{ __('common.no_data') }}</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    @empty
+        <div class="bg-white border-2 border-billmora-neutral-100 rounded-2xl p-8 text-center text-slate-500">
+            {{ __('common.no_data') }}
+        </div>
+    @endforelse
+
+    {{-- Delete modals --}}
+    @can('packages.delete')
+        @foreach ($packages as $package)
+        <x-admin::modal.content
+            modal="deleteModal-{{ $package->id }}"
+            variant="danger"
+            size="xl"
+            position="centered"
+            title="{{ __('common.delete_modal_title') }}"
+            description="{{ __('common.delete_modal_description', ['item' => $package->name]) }}">
+            <form action="{{ route('admin.packages.destroy', ['package' => $package->id]) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <div class="flex justify-end gap-2 mt-4">
+                    <x-admin::modal.trigger type="button" variant="close" class="bg-billmora-neutral-50 border-2 border-billmora-primary-500 hover:bg-billmora-primary-600 px-3 py-2 text-billmora-primary-500 hover:text-white rounded-lg transition-colors ease-in-out duration-150 cursor-pointer">{{ __('common.cancel') }}</x-admin::modal.trigger>
+                    <button type="submit" class="bg-red-500 border-2 border-red-500 hover:bg-red-600 px-3 py-2 text-white rounded-lg transition-colors ease-in-out duration-150 cursor-pointer">{{ __('common.delete') }}</button>
+                </div>
+            </form>
+        </x-admin::modal.content>
+        @endforeach
+    @endcan
+</div>
+@endsection

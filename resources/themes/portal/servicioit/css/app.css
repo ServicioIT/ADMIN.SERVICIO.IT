@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import "tailwindcss";
+
+@source '../../../../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../../../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+@source '../../../../../plugin/**/resources/views/**/*.blade.php';
+@source '../../../../../resources/themes/*/config.blade.php';
+
+html {
+    font-size: 14px;
+}
+
+:root {
+    /* Billmora Neutral Palette */
+    --billmora-neutral-50: #f4f7fe;
+    --billmora-neutral-100: #eceeff;
+    --billmora-neutral-200: #e0e2ff;
+    --billmora-neutral-300: #d6d9ff;
+    --billmora-neutral-400: #cdd0ff;
+    --billmora-neutral-500: #c3c6ff;
+    --billmora-neutral-600: #8c90eb;
+    --billmora-neutral-700: #6468cc;
+    --billmora-neutral-800: #4246a3;
+    --billmora-neutral-900: #292d7a;
+    --billmora-neutral-950: #14174d;
+
+    /* Billmora Primary Palette */
+    --servicioit-primary-50: #f0f0ff;
+    --servicioit-primary-100: #e0e0ff;
+    --servicioit-primary-200: #c2c2ff;
+    --servicioit-primary-300: #9494ff;
+    --servicioit-primary-400: #7b71f9;
+    --servicioit-primary-500: #7267ef; /* Base Primary */
+    --servicioit-primary-600: #6659e0; /* Hover Primary */
+    --servicioit-primary-700: #5345cc;
+    --servicioit-primary-800: #4338a8;
+    --servicioit-primary-900: #383087;
+    --servicioit-primary-950: #211c4d;
+}
+
+* {
+    color-scheme: light;
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+@theme {
+    /* Mapping Billmora Neutral */
+    --color-billmora-neutral-50: var(--billmora-neutral-50);
+    --color-billmora-neutral-100: var(--billmora-neutral-100);
+    --color-billmora-neutral-200: var(--billmora-neutral-200);
+    --color-billmora-neutral-300: var(--billmora-neutral-300);
+    --color-billmora-neutral-400: var(--billmora-neutral-400);
+    --color-billmora-neutral-500: var(--billmora-neutral-500);
+    --color-billmora-neutral-600: var(--billmora-neutral-600);
+    --color-billmora-neutral-700: var(--billmora-neutral-700);
+    --color-billmora-neutral-800: var(--billmora-neutral-800);
+    --color-billmora-neutral-900: var(--billmora-neutral-900);
+    --color-billmora-neutral-950: var(--billmora-neutral-950);
+
+    /* Primary Palette */
+    --color-servicioit-primary-50: var(--servicioit-primary-50);
+    --color-servicioit-primary-100: var(--servicioit-primary-100);
+    --color-servicioit-primary-200: var(--servicioit-primary-200);
+    --color-servicioit-primary-300: var(--servicioit-primary-300);
+    --color-servicioit-primary-400: var(--servicioit-primary-400);
+    --color-servicioit-primary-500: var(--servicioit-primary-500); /* Base Primary */
+    --color-servicioit-primary-600: var(--servicioit-primary-600); /* Hover Primary */
+    --color-servicioit-primary-700: var(--servicioit-primary-700);
+    --color-servicioit-primary-800: var(--servicioit-primary-800);
+    --color-servicioit-primary-900: var(--servicioit-primary-900);
+    --color-servicioit-primary-950: var(--servicioit-primary-950);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--billmora-neutral-100);
+}
+::-webkit-scrollbar-thumb {
+    background-color: var(--color-servicioit-primary-500);
+    border-radius: 4px;
+}
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-servicioit-primary-500) var(--billmora-neutral-100);
+}

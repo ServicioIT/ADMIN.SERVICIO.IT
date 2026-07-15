@@ -1,0 +1,18 @@
+@section('title', 'Oopss.. Maintenance')
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @include('client::layouts.meta')
+</head>
+<body class="bg-white">
+    <div class="flex justify-center w-full min-h-dvh">
+        <div class="bg-billmora-neutral-50 my-auto mx-4 md:mx-none p-8 border-2 border-billmora-neutral-100 rounded-xl">
+            <p class="text-xl text-billmora-primary-500 font-semibold">{{ $message }}</p>
+        </div>
+    </div>
+    @livewireScripts
+</body>
+</html>

@@ -73,6 +73,49 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     protected function setup(): void
     {
         $this->mergeConfigOverrides();
+        $this->publishTranslations();
+    }
+
+    /**
+     * Sync Spanish translations from plugin to lang directory
+     * so root-namespace __() calls find them.
+     */
+    protected function publishTranslations(): void
+    {
+        $source = $this->pluginPath . '/lang/es_CO';
+        $target = base_path('lang/es_CO');
+
+        if (is_dir($source) && is_dir($target)) {
+            $files = glob($source . '/*.php');
+            foreach ($files as $file) {
+                $name = basename($file);
+                if (!file_exists($target . '/' . $name) 
+                    || md5_file($file) !== md5_file($target . '/' . $name)) {
+                    copy($file, $target . '/' . $name);
+                }
+            }
+            // Also sync subdirectories
+            $dirs = glob($source . '/*', GLOB_ONLYDIR);
+            foreach ($dirs as $dir) {
+                $sub = basename($dir);
+                $this->syncDir($dir, $target . '/' . $sub);
+            }
+        }
+    }
+
+    protected function syncDir(string $source, string $target): void
+    {
+        if (!is_dir($target)) {
+            mkdir($target, 0755, true);
+        }
+        $files = glob($source . '/*.php');
+        foreach ($files as $file) {
+            $name = basename($file);
+            if (!file_exists($target . '/' . $name)
+                || md5_file($file) !== md5_file($target . '/' . $name)) {
+                copy($file, $target . '/' . $name);
+            }
+        }
     }
 
     /**
