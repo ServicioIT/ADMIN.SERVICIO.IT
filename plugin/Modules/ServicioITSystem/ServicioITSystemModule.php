@@ -60,18 +60,11 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     }
 
     /**
-     * Admin navigation items (visible en sidebar del admin).
+     * Admin navigation — deshabilitado temporalmente (ruta no definida).
      */
     public function getNavigationAdmin(): array
     {
-        return [
-            'servicioit' => [
-                'label'      => 'SERVICIO IT',
-                'icon'       => 'lucide-building-2',
-                'route'      => route('admin.modules.servicioitsystem.index'),
-                'permission' => 'modules.servicioit.manage',
-            ],
-        ];
+        return [];
     }
 
     /**
