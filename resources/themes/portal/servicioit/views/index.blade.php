@@ -139,7 +139,7 @@
                 </a>
             @else
                 <a href="https://wa.me/573152221014" target="_blank" class="bg-white px-6 py-3 text-billmora-primary-500 font-semibold rounded-lg transition shadow-lg">
-                    {{ __('portal.client_area') }}
+                    WhatsApp Atención y Soporte
                 </a>
             @endguest
         </div>
