@@ -64,8 +64,7 @@
         </div>
         <div class="text-center border-t border-billmora-neutral-100 pt-6">
             <span class="text-slate-500 font-semibold"><a href="https://www.servicio.it" target="_blank" class="text-billmora-primary-500 font-semibold hover:underline">© 1999-{{ date('Y') }} {{ Billmora::getGeneral('company_name') }}</a></span>
-            <span class="text-slate-400 mx-2">·</span>
-            <a href="mailto:soporte@servicio.it" class="text-billmora-primary-500 font-semibold hover:underline">soporte@servicio.it</a>
+            
         </div>
     </div>
 </footer>
