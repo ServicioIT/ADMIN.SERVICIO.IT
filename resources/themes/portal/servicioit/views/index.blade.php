@@ -59,7 +59,7 @@
                     this.updateCols();
                     window.addEventListener('resize', () => {
                         this.updateCols();
-                        this.current = Math.min(this.current, this.maxIndex());
+                        this.current = Math.min(this.current, this.maxIndex();
                     });
                 },
                 updateCols() {
@@ -71,14 +71,14 @@
                     return Math.max(0, this.total - this.cols);
                 },
                 prev() { if (this.current > 0) this.current-- },
-                next() { if (this.current < this.maxIndex()) this.current++ },
+                next() { if (this.current < this.maxIndex() this.current++ },
             }"
             class="relative min-w-0"
         >
             <div class="overflow-hidden w-full">
                 <div
                     class="flex w-full transition-transform duration-300 ease-in-out gap-4"
-                    :style="`transform: translateX(calc(-${current} * (100% / ${cols} + 16px / ${cols})))`"
+                    :style="`transform: translateX(calc(-${current} * (100% / ${cols} + 16px / ${cols}))`"
                 >
                     @foreach ($catalogs as $catalog)
                         <a
@@ -88,12 +88,12 @@
                         >
                             @if ($catalog->icon)
                                 <div class="w-24 h-24 rounded-xl bg-billmora-neutral-100 flex items-center justify-center shrink-0 overflow-hidden">
-                                    <img src="{{ Storage::url($catalog->icon) }}" alt="{{ __bilingual(__bilingual($catalog->name)) }}" class="w-full h-full object-contain p-3">
+                                    <img src="{{ Storage::url($catalog->icon) }}" alt="{!! __bilingual($catalog->name) !!}" class="w-full h-full object-contain p-3">
                                 </div>
                             @endif
                             <div class="grid gap-1 min-w-0 mb-auto">
-                                <span class="text-slate-700 font-semibold text-lg truncate">{{ __bilingual(__bilingual($catalog->name)) }}</span>
-                                <p class="text-slate-500 text-sm line-clamp-2">{!! $catalog->description !!}</p>
+                                <span class="text-slate-700 font-semibold text-lg truncate">{!! __bilingual($catalog->name) !!}</span>
+                                <p class="text-slate-500 text-sm line-clamp-2">{!! __bilingual($catalog->description) !!}</p>
                             </div>
                             <span class="text-billmora-primary-500 text-sm font-semibold inline-flex items-center gap-1 mt-auto">
                                 {{ __('portal.explore') }}
