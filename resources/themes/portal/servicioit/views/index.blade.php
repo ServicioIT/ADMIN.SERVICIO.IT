@@ -13,9 +13,16 @@
             </h1>
             <p class="text-xl text-billmora-primary-500 font-semibold">Servidores / Hosting / Correos / Web / Apps</p>
             <p class="text-slate-600 leading-relaxed">
-                La gestión de servicios de IT es un enfoque estratégico para <strong>diseñar, entregar, gestionar y mejorar</strong> la forma en que las empresas utilizan las tecnologías de la información.
+                <strong>Desde 1999.</strong> Más baratos que Microsoft 365 y Google Workspace. 
+                Incluimos Cloudflare gratis (CDN, SSL, DDoS, WAF) en todos los planes. 
+                Soporte humano real, no chatbots.
             </p>
-            
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> 20-35% más barato que M365 y Google</div>
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> Cloudflare CDN + DDoS + WAF gratis</div>
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> ISO 9001, 27001, 27017, 27018</div>
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> Soporte humano — WhatsApp directo</div>
+            </div>
             <div class="flex gap-3 flex-wrap">
                 <a href="{{ route('client.store') }}" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 px-6 py-3 text-white font-semibold rounded-lg transition shadow-lg shadow-billmora-primary-500/30">
                     {{ __('portal.get_started') }}
