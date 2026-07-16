@@ -26,27 +26,27 @@ class CloudflareRegistrar extends AbstractPlugin implements RegistrarInterface
                 'label'   => 'Cloudflare API Token',
                 'required' => true,
                 'default' => '',
-                'helper'  => 'Crear en Cloudflare → My Profile → API Tokens. Permisos: Zone:Read, DNS:Edit.',
+                'helper'  => 'Token con permisos: Account:Read + Registrar:Read/Write + Zone:Read + DNS:Edit.',
+            ],
+            'account_id' => [
+                'type'    => 'text',
+                'label'   => 'Cloudflare Account ID',
+                'required' => true,
+                'default' => '',
+                'helper'  => 'ID de tu cuenta Cloudflare. Lo encuentras en la URL del dashboard o en la API.',
             ],
             'default_nameservers' => [
                 'type'    => 'textarea',
                 'label'   => 'Nameservers por defecto',
                 'required' => false,
-                'default'  => "ns1.cloudflare.com\nns2.cloudflare.com",
+                'default'  => "ns1.cloudflare.com\nns2.cloudflare.com\nns3.cloudflare.com",
                 'helper'  => 'Nameservers asignados a nuevos dominios (uno por línea).',
             ],
-            'default_ttl' => [
-                'type'    => 'number',
-                'label'   => 'TTL por defecto (segundos)',
-                'required' => false,
-                'default' => '3600',
-                'helper'  => 'TTL para registros DNS. 1 = Automatic.',
-            ],
-            'proxy_default' => [
+            'auto_proxy' => [
                 'type'    => 'toggle',
-                'label'   => 'Proxied por defecto',
+                'label'   => 'Proxy automático (CDN naranja)',
                 'default' => true,
-                'helper'  => 'Activar Cloudflare proxy (naranja) por defecto en registros A/AAAA/CNAME.',
+                'helper'  => 'Activar Cloudflare proxy por defecto en registros A/AAAA/CNAME.',
             ],
         ];
     }
@@ -58,156 +58,180 @@ class CloudflareRegistrar extends AbstractPlugin implements RegistrarInterface
     {
         $response = $this->apiRequest('GET', '/user/tokens/verify');
 
-        if ($response && ($response['success'] ?? false)) {
-            return true;
-        }
-
-        Log::error('Cloudflare Registrar: Connection test failed', [
-            'response' => $response,
-        ]);
-
-        return false;
+        return $response && ($response['success'] ?? false);
     }
 
     /**
-     * Check domain availability via Cloudflare.
-     * Creates zone with pause=true to verify ownership without activating.
+     * Check domain availability via Cloudflare Registrar search.
      */
     public function checkAvailability(string $domain): array
     {
-        // Cloudflare doesn't have a direct "check availability" endpoint.
-        // We try to create a zone - if it fails with "already exists", the domain is taken.
-        // This is a lightweight check - we don't actually create the zone here,
-        // just check if one already exists under this account.
-
         $domain = strtolower(trim($domain));
+        $accountId = $this->getInstanceConfig('account_id');
 
-        // Check if we already have this zone
-        $zones = $this->apiRequest('GET', '/zones', [
-            'name' => $domain,
-        ]);
+        // Try to get existing domain in registrar
+        $response = $this->apiRequest('GET', "/accounts/{$accountId}/registrar/domains/{$domain}");
 
-        $exists = !empty($zones['result']) && count($zones['result']) > 0;
-
-        // If zone exists in our account, it's already registered
-        if ($exists) {
-            $zone = $zones['result'][0];
+        if ($response && ($response['success'] ?? false)) {
+            // Domain already registered in this account
             return [
                 'available' => false,
-                'premium'   => false,
+                'premium'   => $response['result']['premium'] ?? false,
                 'price'     => null,
-                'status'    => $zone['status'] ?? 'active',
             ];
         }
 
-        // Domain not in our Cloudflare account — could be available or could be
-        // registered with another provider/account. We report it as "check manually".
+        // If 404, domain is available (not registered in this account)
+        // If other error, we can't determine — assume available with caution
         return [
             'available' => true,
             'premium'   => false,
             'price'     => null,
-            'note'      => 'Verify manually at cloudflare.com',
         ];
     }
 
     /**
-     * Create registrant — add domain to Cloudflare (DNS-only, no registration).
-     * Actual domain registration must be done at cloudflare.com/registrar.
+     * Register a new domain via Cloudflare Registrar API.
      */
     public function create(Registrant $registrant): void
     {
         $domain = strtolower(trim($registrant->domain));
+        $accountId = $this->getInstanceConfig('account_id');
+        $years = $registrant->years ?? 1;
 
-        // Create zone in Cloudflare (DNS setup)
-        $response = $this->apiRequest('POST', '/zones', [
-            'name' => $domain,
-            'type' => 'full',
-        ]);
+        $payload = [
+            'name'    => $domain,
+            'years'   => $years,
+            'auto_renew' => true,
+            'zone_activate' => true,
+            'registrant_contact' => [
+                'first_name' => $registrant->user?->first_name ?? 'Customer',
+                'last_name'  => $registrant->user?->last_name ?? '',
+                'email'      => $registrant->user?->email ?? '',
+                'phone'      => $registrant->user?->billing?->phone ?? '',
+                'organization' => $registrant->user?->billing?->company ?? '',
+                'address'    => $registrant->user?->billing?->street_address ?? '',
+                'city'       => $registrant->user?->billing?->city ?? '',
+                'state'      => $registrant->user?->billing?->state ?? '',
+                'zip'        => $registrant->user?->billing?->postcode ?? '',
+                'country'    => $registrant->user?->billing?->country ?? 'CO',
+            ],
+        ];
+
+        $response = $this->apiRequest(
+            'POST',
+            "/accounts/{$accountId}/registrar/domains/{$domain}/registrations",
+            $payload
+        );
 
         if (empty($response['result']['id'])) {
-            Log::error("Cloudflare Registrar: Failed to create zone for {$domain}", $response);
-            return;
+            Log::error("Cloudflare Registrar: Failed to register {$domain}", $response);
+            throw new \RuntimeException('Failed to register domain: ' . ($response['errors'][0]['message'] ?? 'Unknown error'));
         }
 
-        $zoneId = $response['result']['id'];
-        $nameservers = $response['result']['name_servers'] ?? [];
-
-        // Store zone info
+        // Store registration info
         $configuration = $registrant->configuration ?? [];
-        $configuration['cloudflare_zone_id'] = $zoneId;
-        $configuration['nameservers'] = $nameservers;
+        $configuration['cloudflare_registration_id'] = $response['result']['id'];
+        $configuration['cloudflare_zone_id'] = $response['result']['zone_id'] ?? null;
+        $configuration['nameservers'] = $response['result']['name_servers'] ?? $this->getDefaultNameservers();
 
         $registrant->update([
             'configuration' => $configuration,
+            'registered_at' => now(),
+            'expires_at'    => now()->addYears($years),
         ]);
 
-        Log::info("Cloudflare Registrar: Zone created for {$domain} — Zone ID: {$zoneId}");
+        Log::info("Cloudflare Registrar: Domain {$domain} registered — ID: {$response['result']['id']}");
     }
 
     /**
-     * Transfer registrant — adds existing domain as zone to Cloudflare.
+     * Transfer domain into Cloudflare Registrar.
      */
     public function transfer(Registrant $registrant, string $eppCode): void
     {
         $domain = strtolower(trim($registrant->domain));
+        $accountId = $this->getInstanceConfig('account_id');
 
-        // Add zone to Cloudflare (the domain should already be pointing to Cloudflare NS)
-        $response = $this->apiRequest('POST', '/zones', [
-            'name' => $domain,
-            'type' => 'full',
-        ]);
+        $payload = [
+            'name'    => $domain,
+            'years'   => $registrant->years ?? 1,
+            'auto_renew' => true,
+            'auth_code' => $eppCode,
+        ];
+
+        $response = $this->apiRequest(
+            'POST',
+            "/accounts/{$accountId}/registrar/domains/{$domain}/transfer",
+            $payload
+        );
 
         if (empty($response['result']['id'])) {
-            Log::error("Cloudflare Registrar: Failed to add zone for transfer {$domain}", $response);
-            return;
+            Log::error("Cloudflare Registrar: Failed to transfer {$domain}", $response);
+            throw new \RuntimeException('Failed to transfer domain: ' . ($response['errors'][0]['message'] ?? 'Unknown error'));
         }
 
-        $zoneId = $response['result']['id'];
-        $nameservers = $response['result']['name_servers'] ?? [];
-
         $configuration = $registrant->configuration ?? [];
-        $configuration['cloudflare_zone_id'] = $zoneId;
-        $configuration['nameservers'] = $nameservers;
+        $configuration['cloudflare_registration_id'] = $response['result']['id'];
         $configuration['epp_code'] = $eppCode;
 
-        $registrant->update([
-            'configuration' => $configuration,
-        ]);
+        $registrant->update(['configuration' => $configuration]);
 
-        Log::info("Cloudflare Registrar: Zone added for transfer {$domain} — Zone ID: {$zoneId}");
+        Log::info("Cloudflare Registrar: Transfer initiated for {$domain}");
     }
 
     /**
-     * Renew registrant — Cloudflare domains auto-renew. Admin must handle billing externally.
+     * Renew domain registration.
      */
     public function renew(Registrant $registrant, int $years = 1): void
     {
-        Log::info("Cloudflare Registrar: Renewal notice for {$registrant->domain} — {$years} year(s). Handle manually at cloudflare.com.");
+        $domain = strtolower(trim($registrant->domain));
+        $accountId = $this->getInstanceConfig('account_id');
+
+        // Get current registration
+        $current = $this->apiRequest('GET', "/accounts/{$accountId}/registrar/domains/{$domain}");
+
+        if (!$current || !($current['success'] ?? false)) {
+            Log::warning("Cloudflare Registrar: Cannot find {$domain} for renewal");
+            return;
+        }
+
+        $currentExpires = $current['result']['expires_at'] ?? null;
+        $currentYears = $current['result']['years'] ?? 1;
+        $newYears = $currentYears + $years;
+
+        $response = $this->apiRequest(
+            'PUT',
+            "/accounts/{$accountId}/registrar/domains/{$domain}",
+            ['years' => $newYears, 'auto_renew' => true]
+        );
+
+        if ($response && ($response['success'] ?? false)) {
+            if ($currentExpires) {
+                $registrant->update(['expires_at' => \Carbon\Carbon::parse($currentExpires)->addYears($years)]);
+            }
+            Log::info("Cloudflare Registrar: {$domain} renewed for {$years} year(s) — now {$newYears} years total");
+        }
     }
 
     /**
-     * Get nameservers from Cloudflare zone.
+     * Get nameservers from Cloudflare Registrar.
      */
     public function getNameservers(Registrant $registrant): array
     {
-        $zoneId = $registrant->configuration['cloudflare_zone_id'] ?? null;
+        $domain = strtolower(trim($registrant->domain));
+        $accountId = $this->getInstanceConfig('account_id');
 
-        if (!$zoneId) {
-            // Fallback to stored nameservers
-            return $registrant->configuration['nameservers'] 
-                ?? explode("\n", $this->getInstanceConfig('default_nameservers', "ns1.cloudflare.com\nns2.cloudflare.com"));
+        $response = $this->apiRequest('GET', "/accounts/{$accountId}/registrar/domains/{$domain}");
+
+        if ($response && ($response['success'] ?? false)) {
+            return $response['result']['name_servers'] ?? $this->getDefaultNameservers();
         }
 
-        $response = $this->apiRequest('GET', "/zones/{$zoneId}");
-
-        return $response['result']['name_servers'] 
-            ?? $registrant->configuration['nameservers'] 
-            ?? [];
+        return $registrant->configuration['nameservers'] ?? $this->getDefaultNameservers();
     }
 
     /**
-     * Set nameservers — not applicable for Cloudflare (uses Cloudflare NS).
-     * Instead, list DNS records of the zone as reference.
+     * Set nameservers — Cloudflare Registrar manages NS internally.
      */
     public function setNameservers(Registrant $registrant, array $nameservers): void
     {
@@ -215,91 +239,42 @@ class CloudflareRegistrar extends AbstractPlugin implements RegistrarInterface
     }
 
     /**
-     * Get DNS records for the zone.
-     */
-    public function getDnsRecords(Registrant $registrant): array
-    {
-        $zoneId = $registrant->configuration['cloudflare_zone_id'] ?? null;
-
-        if (!$zoneId) {
-            return [];
-        }
-
-        $response = $this->apiRequest('GET', "/zones/{$zoneId}/dns_records", [
-            'per_page' => 100,
-        ]);
-
-        return $response['result'] ?? [];
-    }
-
-    /**
-     * Get EPP Code.
-     */
-    public function getEPPCode(Registrant $registrant): string
-    {
-        // EPP codes are obtained from the Cloudflare dashboard
-        return $registrant->configuration['epp_code'] ?? '';
-    }
-
-    /**
-     * Get Whois Info.
-     */
-    public function getWhoisInfo(Registrant $registrant): array
-    {
-        return [
-            'registrar'      => 'Cloudflare',
-            'creation_date'  => $registrant->registered_at ? $registrant->registered_at->toDateString() : now()->toDateString(),
-            'expiration_date' => $registrant->expires_at ? $registrant->expires_at->toDateString() : now()->addYear()->toDateString(),
-        ];
-    }
-
-    /**
-     * Set Whois Privacy — Cloudflare enables this by default for all registered domains.
-     */
-    public function setWhoisPrivacy(Registrant $registrant, bool $enabled): void
-    {
-        Log::info("Cloudflare Registrar: WHOIS Privacy for {$registrant->domain} set to " . ($enabled ? 'enabled' : 'disabled'));
-        $registrant->update(['whois_privacy' => $enabled]);
-    }
-
-    /**
-     * Sync Status from Cloudflare zone.
+     * Sync domain status from Cloudflare.
      */
     public function syncStatus(Registrant $registrant): array
     {
-        $zoneId = $registrant->configuration['cloudflare_zone_id'] ?? null;
+        $domain = strtolower(trim($registrant->domain));
+        $accountId = $this->getInstanceConfig('account_id');
 
-        if (!$zoneId) {
+        $response = $this->apiRequest('GET', "/accounts/{$accountId}/registrar/domains/{$domain}");
+
+        if (!$response || !($response['success'] ?? false)) {
             return [
                 'status'     => $registrant->status,
-                'expires_at' => $registrant->expires_at ? $registrant->expires_at->toDateTimeString() : null,
+                'expires_at' => $registrant->expires_at?->toDateTimeString(),
             ];
         }
 
-        $response = $this->apiRequest('GET', "/zones/{$zoneId}");
-
-        $zoneStatus = $response['result']['status'] ?? 'unknown';
-        $paused = $response['result']['paused'] ?? false;
-
-        $status = match ($zoneStatus) {
-            'active'  => $paused ? 'suspended' : 'active',
-            'pending' => 'pending',
-            'moved'   => 'expired',
-            default   => $registrant->status,
-        };
+        $data = $response['result'];
 
         return [
-            'status'     => $status,
-            'expires_at' => $registrant->expires_at ? $registrant->expires_at->toDateTimeString() : null,
-            'zone_status' => $zoneStatus,
-            'paused'     => $paused,
-            'plan'       => $response['result']['plan']['name'] ?? 'Free',
+            'status'          => $data['status'] ?? $registrant->status,
+            'expires_at'      => $data['expires_at'] ?? null,
+            'registration_id' => $data['id'] ?? null,
+            'premium'         => $data['premium'] ?? false,
+            'auto_renew'      => $data['auto_renew'] ?? true,
+            'locked'          => $data['locked'] ?? true,
         ];
     }
 
-    // =====================================================
-    // Helper Methods
-    // =====================================================
+    /**
+     * Get default nameservers from config.
+     */
+    protected function getDefaultNameservers(): array
+    {
+        $ns = $this->getInstanceConfig('default_nameservers', "ns1.cloudflare.com\nns2.cloudflare.com");
+        return array_filter(array_map('trim', explode("\n", $ns)));
+    }
 
     /**
      * Make an API request to Cloudflare.
@@ -316,9 +291,7 @@ class CloudflareRegistrar extends AbstractPlugin implements RegistrarInterface
         try {
             $http = Http::withToken($token)
                 ->timeout(30)
-                ->withHeaders([
-                    'Content-Type' => 'application/json',
-                ]);
+                ->withHeaders(['Content-Type' => 'application/json']);
 
             $url = $this->apiBase . $endpoint;
 
@@ -331,17 +304,21 @@ class CloudflareRegistrar extends AbstractPlugin implements RegistrarInterface
                 default  => null,
             };
 
-            if (!$response || $response->failed()) {
-                Log::error("Cloudflare Registrar: API {$method} {$endpoint} failed", [
-                    'status' => $response?->status(),
-                    'body'   => $response?->body(),
-                ]);
+            if (!$response) {
                 return null;
             }
 
-            return $response->json();
+            $json = $response->json();
+
+            if (!$json || ($json['success'] === false)) {
+                Log::error("Cloudflare Registrar: API {$method} {$endpoint} failed", [
+                    'errors' => $json['errors'] ?? [],
+                ]);
+            }
+
+            return $json;
         } catch (\Throwable $e) {
-            Log::error("Cloudflare Registrar: API {$method} {$endpoint} exception: " . $e->getMessage());
+            Log::error("Cloudflare Registrar: {$method} {$endpoint} exception: " . $e->getMessage());
             return null;
         }
     }
