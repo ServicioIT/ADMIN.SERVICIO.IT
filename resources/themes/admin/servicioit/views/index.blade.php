@@ -1,166 +1,155 @@
-@extends('admin::layouts.app')
-
-@section('title', 'Admin Dashboard')
+@extends('portal::layouts.app')
 
 @section('body')
-<div class="grid gap-4">
-    <h2 class="text-2xl font-bold text-slate-600">{{ __('admin/dashboard.welcome', ['name' => Auth::user()->first_name]) }}</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white rounded-lg p-5 border-b-4 border-green-500">
-            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">{{ __('admin/dashboard.revenue_this_month') }}</p>
-            <h3 class="text-3xl font-bold text-slate-600 mt-2">{{ $formattedRevenue }}</h3>
-        </div>
-        <div class="bg-white rounded-lg p-5 border-b-4 border-red-500">
-            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">{{ __('admin/dashboard.unpaid_invoices') }}</p>
-            <div class="flex items-baseline mt-2">
-                <h3 class="text-3xl font-bold text-slate-600">{{ $unpaidInvoicesCount }}</h3>
-                <span class="ml-2 text-sm text-red-500 font-semibold">{{ __('admin/dashboard.overdue_badge', ['count' => $overdueInvoicesCount]) }}</span>
+{{-- HERO SECTION --}}
+<div class="absolute inset-0 h-full w-full bg-billmora-neutral-50 bg-[radial-gradient(#e5e7eb_1.5px,transparent_1.5px)] bg-size-[20px_20px] -z-10"></div>
+<section class="max-w-7xl mx-auto">
+    <div class="w-full min-h-[80vh] grid md:grid-cols-2 justify-around items-start md:items-center px-4 pt-32 pb-16 gap-8">
+        <div class="grid gap-6">
+            <span class="text-billmora-primary-500 font-semibold text-sm uppercase tracking-wider">Servicios Informáticos, Tecnológicos & Soporte</span>
+            <h1 class="text-5xl font-bold text-slate-800 leading-tight">
+                Servicio <span class="text-billmora-primary-500">it</span><br>
+                Servicios <span class="text-billmora-primary-500">Digitales</span>
+            </h1>
+            <p class="text-xl text-billmora-primary-500 font-semibold">Servidores / Hosting / Correos / Web / Apps</p>
+            <p class="text-slate-600 leading-relaxed">
+                <strong>Desde 1999.</strong> Más baratos que Microsoft 365 y Google Workspace. 
+                Cloudflare Incluido (CDN, SSL, DDoS, WAF) en todos los planes. 
+                Soporte humano real.
+            </p>
+            <div class="grid grid-cols-2 gap-3 text-sm">
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> 20-35% más barato que M365 y Google</div>
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> Cloudflare CDN + DDoS + WAF gratis</div>
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> ISO 9001, 27001, 27017, 27018</div>
+                <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> Soporte humano — WhatsApp directo</div>
+            </div>
+            <div class="flex gap-3 flex-wrap">
+                <a href="{{ route('client.store') }}" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 px-6 py-3 text-white font-semibold rounded-lg transition shadow-lg shadow-billmora-primary-500/30">
+                    {{ __('portal.get_started') }}
+                </a>
+                @guest
+                <a href="{{ route('client.login') }}" class="border-2 border-billmora-primary-500 text-billmora-primary-500 hover:bg-billmora-primary-50 px-6 py-3 font-semibold rounded-lg transition">
+                    {{ __('common.sign_in') }}
+                </a>
+                @endguest
             </div>
         </div>
-        <div class="bg-white rounded-lg p-5 border-b-4 border-blue-500">
-            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">{{ __('admin/dashboard.active_services') }}</p>
-            <div class="flex items-baseline mt-2">
-                <h3 class="text-3xl font-bold text-slate-600">{{ $activeServices }}</h3>
-                <span class="ml-2 text-sm text-orange-500 font-semibold">{{ __('admin/dashboard.suspended_badge', ['count' => $suspendedServices]) }}</span>
-            </div>
-        </div>
-        <div class="bg-white rounded-lg p-5 border-b-4 border-purple-500">
-            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">{{ __('admin/dashboard.pending_tickets') }}</p>
-            <h3 class="text-3xl font-bold text-slate-600 mt-2">{{ $pendingTickets }}</h3>
-        </div>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-8">
-        <div class="h-fit bg-white border-2 border-billmora-neutral-100 rounded-2xl p-5 lg:col-span-2">
-            <h3 class="text-lg font-semibold text-slate-600 mb-4">{{ __('admin/dashboard.revenue_overview', ['year' => now()->year]) }}</h3>
-            <div class="relative h-64 w-full">
-                <canvas id="revenueChart"></canvas>
-            </div>
-        </div>
-        <div class="flex flex-col gap-5 lg:col-span-1">
-            <div class="bg-white border-2 border-billmora-neutral-100 rounded-2xl p-5">
-                <h3 class="text-lg font-semibold text-slate-600 mb-4">{{ __('admin/dashboard.billing_summary') }}</h3>
-                <ul>
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 text-sm font-medium uppercase">{{ __('admin/dashboard.billing_today') }}</span>
-                        <span class="text-slate-600 font-bold">{{ $billingSummary['today'] }}</span>
-                    </li>
-                    <hr class="border-t-2 border-billmora-neutral-100 my-3">
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 text-sm font-medium uppercase">{{ __('admin/dashboard.billing_month') }}</span>
-                        <span class="text-slate-600 font-bold">{{ $billingSummary['month'] }}</span>
-                    </li>
-                    <hr class="border-t-2 border-billmora-neutral-100 my-3">
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 text-sm font-medium uppercase">{{ __('admin/dashboard.billing_year') }}</span>
-                        <span class="text-slate-600 font-bold">{{ $billingSummary['year'] }}</span>
-                    </li>
-                    <hr class="border-t-2 border-billmora-neutral-100 my-3">
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-500 font-semibold uppercase">{{ __('admin/dashboard.billing_all_time') }}</span>
-                        <span class="text-billmora-primary-500 font-bold text-lg">{{ $billingSummary['all_time'] }}</span>
-                    </li>
-                </ul>
-            </div>
-            <div class="bg-white border-2 border-billmora-neutral-100 rounded-2xl p-5">
-                <h3 class="text-lg font-semibold text-slate-600 mb-4">{{ __('admin/dashboard.system_summary') }}</h3>
-                <ul>
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-600 font-medium">{{ __('admin/dashboard.total_clients') }}</span>
-                        <span class="bg-blue-100 text-blue-800 py-1 px-3 rounded-full text-xs font-semibold">{{ $totalClients }}</span>
-                    </li>
-                    <hr class="border-t-2 border-billmora-neutral-100 my-3">
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-600 font-medium">{{ __('admin/dashboard.tasks') }}</span>
-                        <a href="{{ route('admin.tasks') }}" class="bg-red-100 text-red-700 hover:bg-red-200 py-1 px-3 rounded-full text-xs font-semibold transition">
-                            {{ __('admin/dashboard.view_queue') }}
-                        </a>
-                    </li>
-                    <hr class="border-t-2 border-billmora-neutral-100 my-3">
-                    <li class="flex justify-between items-center">
-                        <span class="text-slate-600 font-medium">{{ __('admin/dashboard.automations') }}</span>
-                        <a href="{{ route('admin.automations') }}" class="bg-green-100 text-green-700 hover:bg-green-200 py-1 px-3 rounded-full text-xs font-semibold transition">
-                            {{ __('admin/dashboard.check_health') }}
-                        </a>
-                    </li>
-                </ul>
+        <div class="hidden md:flex ml-auto items-center justify-center">
+            <div class="relative">
+                <div class="absolute inset-0 bg-billmora-primary-500/10 blur-3xl rounded-full"></div>
+                <img src="{{ Billmora::getGeneral('company_logo') }}" alt="SERVICIO IT" class="w-72 h-auto relative">
             </div>
         </div>
     </div>
-</div>
-@endsection
-@push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const chartDatasetLabel = @json(__('admin/dashboard.chart_dataset_label'));
+</section>
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        
-        const dataValues = @json($monthlyRevenueData);
-        const labels = @json($monthsLabel);
-
-        const currencyPrefix = "{{ $currencyActive->prefix ?? '' }}";
-        const currencySuffix = "{{ $currencyActive->suffix ? ' ' . $currencyActive->suffix : '' }}";
-
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: chartDatasetLabel,
-                    data: dataValues,
-                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                    borderColor: 'rgba(16, 185, 129, 1)',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: 'rgba(16, 185, 129, 1)',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 6,
-                    fill: true,
-                    tension: 0.3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) { label += ': '; }
-                                if (context.parsed.y !== null) {
-                                    let formattedNumber = new Intl.NumberFormat('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(context.parsed.y);
-                                    label += currencyPrefix + formattedNumber + currencySuffix;
-                                }
-                                return label;
-                            }
-                        }
-                    }
+{{-- CATALOGS SECTION --}}
+<section class="py-20">
+    <div class="max-w-7xl mx-auto px-4 grid gap-10">
+        <div class="grid text-center gap-2">
+            <h3 class="text-3xl text-slate-800 font-bold">{{ $portalThemeConfig['catalog_title'] }}</h3>
+            <span class="text-lg text-slate-500">{{ $portalThemeConfig['catalog_description'] }}</span>
+        </div>
+        <div
+            x-data="{
+                current: 0,
+                total: {{ $catalogs->count() }},
+                cols: 1,
+                init() {
+                    this.updateCols();
+                    window.addEventListener('resize', () => {
+                        this.updateCols();
+                        this.current = Math.min(this.current, this.maxIndex());
+                    });
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                if (value >= 1000000) {
-                                    return currencyPrefix + (value / 1000000).toFixed(1) + 'M';
-                                } else if (value >= 1000) {
-                                    return currencyPrefix + (value / 1000).toFixed(1) + 'K';
-                                }
-                                return currencyPrefix + value;
-                            }
-                        },
-                        grid: { borderDash: [5, 5] }
-                    },
-                    x: {
-                        grid: { display: false }
-                    }
-                }
-            }
-        });
-    });
-</script>
-@endpush
+                updateCols() {
+                    if (window.innerWidth >= 1024) this.cols = 3;
+                    else if (window.innerWidth >= 768) this.cols = 2;
+                    else this.cols = 1;
+                },
+                maxIndex() {
+                    return Math.max(0, this.total - this.cols);
+                },
+                prev() { if (this.current > 0) this.current-- },
+                next() { if (this.current < this.maxIndex()) this.current++ },
+            }"
+            class="relative min-w-0"
+        >
+            <div class="overflow-hidden w-full">
+                <div
+                    class="flex w-full transition-transform duration-300 ease-in-out gap-4"
+                    :style="`transform: translateX(calc(-${current} * (100% / ${cols} + 16px / ${cols})))`"
+                >
+                    @foreach ($catalogs as $catalog)
+                        <a
+                            href="{{ route('client.store.catalog', ['catalog' => $catalog->slug]) }}"
+                            class="flex-none bg-white border-2 border-billmora-neutral-100 rounded-2xl p-6 hover:border-billmora-primary-500 transition duration-200 grid gap-3"
+                            :style="`width: calc(${100 / cols}% - ${16 * (cols - 1) / cols}px)`"
+                        >
+                            @if ($catalog->icon)
+                                <div class="w-24 h-24 rounded-xl bg-billmora-neutral-100 flex items-center justify-center shrink-0 overflow-hidden">
+                                    <img src="{{ Storage::url($catalog->icon) }}" alt="{{ __bilingual(__bilingual($catalog->name)) }}" class="w-full h-full object-contain p-3">
+                                </div>
+                            @endif
+                            <div class="grid gap-1 min-w-0 mb-auto">
+                                <span class="text-slate-700 font-semibold text-lg truncate">{{ __bilingual(__bilingual($catalog->name)) }}</span>
+                                <p class="text-slate-500 text-sm line-clamp-2">{!! $catalog->description !!}</p>
+                            </div>
+                            <span class="text-billmora-primary-500 text-sm font-semibold inline-flex items-center gap-1 mt-auto">
+                                {{ __('portal.explore') }}
+                                <x-lucide-arrow-right class="w-4 h-4" />
+                            </span>
+                        </a>
+                    @endforeach
+                </div>
+            </div>
+            @if ($catalogs->count() > 1)
+                <div class="flex justify-center items-center gap-3 mt-6">
+                    <button type="button" x-on:click="prev" :disabled="current === 0"
+                        class="p-2 rounded-full border-2 border-billmora-neutral-100 text-slate-500 hover:border-billmora-primary-500 hover:text-billmora-primary-500 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                        <x-lucide-chevron-left class="w-5 h-5" />
+                    </button>
+                    <div class="flex gap-2">
+                        <template x-for="i in (maxIndex() + 1)" :key="i">
+                            <button type="button" x-on:click="current = i - 1"
+                                class="h-2 rounded-full transition-all duration-200"
+                                :class="current === i - 1 ? 'bg-billmora-primary-500 w-4' : 'bg-billmora-neutral-100 w-2'">
+                            </button>
+                        </template>
+                    </div>
+                    <button type="button" x-on:click="next" :disabled="current >= maxIndex()"
+                        class="p-2 rounded-full border-2 border-billmora-neutral-100 text-slate-500 hover:border-billmora-primary-500 hover:text-billmora-primary-500 disabled:opacity-30 disabled:cursor-not-allowed transition">
+                        <x-lucide-chevron-right class="w-5 h-5" />
+                    </button>
+                </div>
+            @endif
+        </div>
+    </div>
+</section>
+
+{{-- CTA SECTION --}}
+<section class="py-20 px-4">
+    <div class="max-w-4xl mx-auto bg-billmora-primary-500 rounded-3xl px-8 py-16 text-center grid gap-6 relative overflow-hidden">
+        <div class="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full"></div>
+        <div class="absolute -bottom-10 -left-10 w-56 h-56 bg-white/10 rounded-full"></div>
+        <div class="relative grid gap-4">
+            <h3 class="text-3xl text-white font-bold">{{ $portalThemeConfig['cta_title'] }}</h3>
+            <p class="text-lg text-white/80 max-w-xl mx-auto">{{ $portalThemeConfig['cta_description'] }}</p>
+        </div>
+        <div class="relative flex justify-center gap-3 flex-wrap">
+            @guest
+                <a href="{{ route('client.register') }}" class="bg-white px-6 py-3 text-billmora-primary-500 font-semibold rounded-lg transition shadow-lg">
+                    {{ __('common.sign_up') }}
+                </a>
+                <a href="mailto:soporte@servicio.it" class="bg-white/20 border-2 border-white/40 px-6 py-3 text-white font-semibold rounded-lg transition hover:bg-white/10">
+                    Contáctanos
+                </a>
+            @else
+                <a href="https://wa.me/573152221014" target="_blank" class="bg-white px-6 py-3 text-billmora-primary-500 font-semibold rounded-lg transition shadow-lg">
+                    WhatsApp Atención y Soporte
+                </a>
+            @endguest
+        </div>
+    </div>
+</section>
+@endsection

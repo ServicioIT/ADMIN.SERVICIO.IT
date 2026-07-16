@@ -4,7 +4,7 @@
 
 @section('body')
 <div class="mb-8">
-    <h2 class="text-3xl text-billmora-primary-500 font-semibold">{{ $catalog->name }}</h2>
+    <h2 class="text-3xl text-billmora-primary-500 font-semibold">{{ __bilingual(__bilingual($catalog->name)) }}</h2>
     <p class="text-slate-500 mt-1">{!! __bilingual($catalog->description) !!}</p>
 </div>
 <div class="grid grid-cols-1 gap-6">
@@ -50,12 +50,12 @@
                     @if ($package->icon)
                         <img 
                             src="{{ Storage::url($package->icon) }}" 
-                            alt="{{ $package->name }}" 
+                            alt="{{ __bilingual($package->name) }}" 
                             class="max-w-40 h-auto mx-auto object-contain rounded-lg"
                         >
                     @endif
                     <div class="space-y-2 text-center flex-1">
-                        <h4 class="text-xl text-billmora-primary-500 font-semibold">{{ $package->name }}</h4>
+                        <h4 class="text-xl text-billmora-primary-500 font-semibold">{{ __bilingual($package->name) }}</h4>
 
                         @if ($isFree)
                             <div class="grid">

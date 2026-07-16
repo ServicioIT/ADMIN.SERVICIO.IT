@@ -25,7 +25,7 @@
                     <div class="grid gap-2">
                         @foreach ($catalogs as $catalog)
                             <a href="{{ route('client.store.catalog', ['catalog' => $catalog->slug]) }}" class="text-slate-600 hover:text-billmora-primary-500">
-                                {{ $catalog->name }}
+                                {{ __bilingual(__bilingual($catalog->name)) }}
                             </a>
                         @endforeach
                     </div>
