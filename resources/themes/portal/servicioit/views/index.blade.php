@@ -14,8 +14,8 @@
             <p class="text-xl text-billmora-primary-500 font-semibold">Servidores / Hosting / Correos / Web / Apps</p>
             <p class="text-slate-600 leading-relaxed">
                 <strong>Desde 1999.</strong> Más baratos que Microsoft 365 y Google Workspace. 
-                Incluimos Cloudflare gratis (CDN, SSL, DDoS, WAF) en todos los planes. 
-                Soporte humano real, no chatbots.
+                Cloudflare Incluido (CDN, SSL, DDoS, WAF) en todos los planes. 
+                Soporte humano real.
             </p>
             <div class="grid grid-cols-2 gap-3 text-sm">
                 <div class="flex items-center gap-2 text-slate-600"><span class="text-billmora-primary-500 text-lg">✓</span> 20-35% más barato que M365 y Google</div>
