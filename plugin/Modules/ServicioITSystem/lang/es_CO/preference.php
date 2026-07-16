@@ -1,8 +1,8 @@
 <?php
 
-return [
-    'title' => 'Preferences',
-    'description' => 'Manage your preferences and settings.',
-    'language' => 'Language',
-    'currency' => 'Moneda'
-];
+return array (
+  'title' => 'Preferences',
+  'description' => 'Gestiona tus preferencias y configuración.',
+  'language' => 'Language',
+  'currency' => 'Moneda',
+);
