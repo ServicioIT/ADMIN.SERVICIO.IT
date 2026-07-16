@@ -74,6 +74,30 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     {
         $this->mergeConfigOverrides();
         $this->publishTranslations();
+        $this->checkAndRestore();
+    }
+
+    /**
+     * Auto-detecte y restaura assets del tema tras one-click update.
+     * Si el CSS no existe, copia de Moraine + aplica rosa.
+     */
+    protected function checkAndRestore(): void
+    {
+        $needsRestore = false;
+        foreach (['admin', 'client', 'portal'] as $type) {
+            $css = base_path("public/themes/{$type}/servicioit/css/style.css");
+            if (!file_exists($css) || filesize($css) < 50000) {
+                $needsRestore = true;
+                break;
+            }
+        }
+
+        if ($needsRestore && file_exists(base_path('scripts/restore-after-update.sh'))) {
+            exec('bash ' . base_path('scripts/restore-after-update.sh') . ' 2>&1', $output, $code);
+            if ($code === 0) {
+                \Illuminate\Support\Facades\Log::info('ServicioIT: Assets restaurados automáticamente.');
+            }
+        }
     }
 
     /**
