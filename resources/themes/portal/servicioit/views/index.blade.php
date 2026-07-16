@@ -15,9 +15,7 @@
             <p class="text-slate-600 leading-relaxed">
                 La gestión de servicios de IT es un enfoque estratégico para <strong>diseñar, entregar, gestionar y mejorar</strong> la forma en que las empresas utilizan las tecnologías de la información.
             </p>
-            <p class="text-slate-600 leading-relaxed">
-                Con experiencia desde <strong>1999</strong> y clientes satisfechos en diferentes sectores, te asesoramos en implementaciones tecnológicas y manejo de información.
-            </p>
+            
             <div class="flex gap-3 flex-wrap">
                 <a href="{{ route('client.store') }}" class="bg-billmora-primary-500 hover:bg-billmora-primary-600 px-6 py-3 text-white font-semibold rounded-lg transition shadow-lg shadow-billmora-primary-500/30">
                     {{ __('portal.get_started') }}
