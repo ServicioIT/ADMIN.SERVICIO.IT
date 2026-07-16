@@ -20,7 +20,7 @@
     }
 </style>
 @endif
-<link rel="stylesheet" href="{{ $portalTheme['assets'] }}/css/style.css">
-<script src="{{ $portalTheme['assets'] }}/js/app.js" type="module"></script>
+<link rel="stylesheet" href="{{ $portalTheme['assets'] }}/css/style.css?v=20260715">
+<script src="{{ $portalTheme['assets'] }}/js/app.js?v=20260715" type="module"></script>
 {{-- Additional Styles --}}
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />

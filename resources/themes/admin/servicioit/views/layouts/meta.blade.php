@@ -5,8 +5,8 @@
 <link rel="icon" href="{{ Billmora::getGeneral('company_favicon') }}">
 <title>@yield('title', 'Admin') | {{ Billmora::getGeneral('company_name') }}</title>
 <!-- Styles -->
-<link rel="stylesheet" href="{{ $adminTheme['assets'] }}/css/style.css">
-<script src="{{ $adminTheme['assets'] }}/js/app.js" type="module"></script>
+<link rel="stylesheet" href="{{ $adminTheme['assets'] }}/css/style.css?v=20260715">
+<script src="{{ $adminTheme['assets'] }}/js/app.js?v=20260715" type="module"></script>
 {{-- Additional Styles --}}
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
