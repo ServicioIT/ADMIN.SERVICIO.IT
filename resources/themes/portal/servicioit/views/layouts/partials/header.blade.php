@@ -9,7 +9,7 @@
     <div class="max-w-7xl h-16 px-4 flex justify-between items-center mx-auto">
         <a href="{{ route('portal.home') }}" class="inline-flex items-center gap-2">
             <img src="{{ Billmora::getGeneral('company_logo') }}" alt="brand logo" class="w-auto h-10 rounded-lg">
-            <span class="text-2xl text-slate-600 font-bold">{{ Billmora::getGeneral('company_name') }}</span>
+            <span class="text-2xl text-billmora-primary-500 font-bold">{{ Billmora::getGeneral('company_name') }}</span>
         </a>
         <div class="hidden md:flex gap-6">
             <a href="{{ route('portal.home') }}" class="text-slate-500 hover:text-billmora-primary-500 font-semibold">
