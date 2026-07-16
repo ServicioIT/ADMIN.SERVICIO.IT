@@ -5,7 +5,7 @@
 @section('body')
 <div class="mb-8">
     <h2 class="text-3xl text-billmora-primary-500 font-semibold">{{ $catalog->name }}</h2>
-    <p class="text-slate-500 mt-1">{{ $catalog->description }}</p>
+    <p class="text-slate-500 mt-1">{!! __bilingual($catalog->description) !!}</p>
 </div>
 <div class="grid grid-cols-1 gap-6">
     <div 
@@ -82,7 +82,7 @@
                             </span>
                         @endif
 
-                        <p class="text-slate-500 text-sm leading-relaxed">{!! $package->description !!}</p>
+                        <p class="text-slate-500 text-sm leading-relaxed">{!! __bilingual($package->description) !!}</p>
                     </div>
                     <div class="mt-auto pt-4 border-t-2 border-billmora-neutral-100 grid gap-2">
                         @if ($isOrderable)
