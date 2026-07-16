@@ -53,7 +53,7 @@
                 @endif
                 <div class="grid gap-1 min-w-0 mb-auto">
                     <span class="text-slate-700 font-semibold text-lg truncate">{{ $catalog->name }}</span>
-                    <p class="text-slate-500 text-sm line-clamp-2">{!! $catalog->description !!}</p>
+                    <p class="text-slate-500 text-sm line-clamp-2">{!! __bilingual($catalog->description) !!}</p>
                 </div>
                 <span class="text-billmora-primary-500 text-sm font-semibold inline-flex items-center gap-1 mt-auto">
                     {{ __('client/store.view_package') }}
