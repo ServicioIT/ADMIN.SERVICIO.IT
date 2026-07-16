@@ -59,7 +59,7 @@
                     this.updateCols();
                     window.addEventListener('resize', () => {
                         this.updateCols();
-                        this.current = Math.min(this.current, this.maxIndex();
+                        this.current = Math.min(this.current, this.maxIndex());
                     });
                 },
                 updateCols() {
@@ -71,7 +71,7 @@
                     return Math.max(0, this.total - this.cols);
                 },
                 prev() { if (this.current > 0) this.current-- },
-                next() { if (this.current < this.maxIndex() this.current++ },
+                next() { if (this.current < this.maxIndex()) this.current++ },
             }"
             class="relative min-w-0"
         >

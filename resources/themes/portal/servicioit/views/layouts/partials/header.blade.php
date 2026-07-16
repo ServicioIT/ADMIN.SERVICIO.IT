@@ -18,6 +18,11 @@
             <a href="{{ route('client.store') }}" class="text-slate-500 hover:text-billmora-primary-500 font-semibold">
                 {{ __('portal.store') }}
             </a>
+            @if (Billmora::getGeneral('term_tos'))
+                <a href="{{ Billmora::getGeneral('term_tos_url') ?: route('portal.terms.service') }}" class="text-slate-500 hover:text-billmora-primary-500 font-semibold">
+                    {{ __('portal.terms_of_service') }}
+                </a>
+            @endif
             @if(!empty($pluginPortalMenus))
                 @foreach($pluginPortalMenus as $groupTitle => $menuItems)
                     @foreach($menuItems as $menu)
@@ -73,6 +78,11 @@
         <a href="{{ route('client.store') }}" class="text-slate-500 hover:text-billmora-primary-500 font-semibold py-1">
             {{ __('portal.store') }}
         </a>
+        @if (Billmora::getGeneral('term_tos'))
+            <a href="{{ Billmora::getGeneral('term_tos_url') ?: route('portal.terms.service') }}" class="text-slate-500 hover:text-billmora-primary-500 font-semibold py-1">
+                {{ __('portal.terms_of_service') }}
+            </a>
+        @endif
 
         <div class="border-t-2 border-billmora-neutral-100 pt-3 flex flex-col gap-2">
             @auth
