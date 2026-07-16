@@ -80,4 +80,7 @@ RUN chown -R www-data:www-data /var/www/html/public/themes/admin/servicioit/ \
     /var/www/html/plugin/Modules/ServicioITSystem/ \
     /var/www/html/plugin/Registrars/
 
+# Crear symlink storage para logo (se pierde en cada deploy)
+RUN php artisan storage:link
+
 EXPOSE 8080
