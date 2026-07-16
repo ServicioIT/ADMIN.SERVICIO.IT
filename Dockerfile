@@ -62,7 +62,26 @@ COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
 
 # Copy restore script
 COPY scripts/restore-after-update.sh /var/www/html/scripts/restore-after-update.sh
-COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
+
+# === COPIAR CSS COMPILADO: Moraine → servicioit + rosa ===
+RUN for type in admin client portal; do \
+      mkdir -p /var/www/html/public/themes/${type}/servicioit/css \
+               /var/www/html/public/themes/${type}/servicioit/js; \
+      cp /var/www/html/public/themes/${type}/moraine/css/style.css \
+         /var/www/html/public/themes/${type}/servicioit/css/ 2>/dev/null || true; \
+      cp /var/www/html/public/themes/${type}/moraine/js/app.js \
+         /var/www/html/public/themes/${type}/servicioit/js/ 2>/dev/null || true; \
+      sed -i \
+        -e 's/#f0f0ff/#fdf2f7/g' -e 's/#e0e0ff/#fce7f0/g' \
+        -e 's/#c2c2ff/#f9c5df/g' -e 's/#9494ff/#f595c4/g' \
+        -e 's/#7b71f9/#f060a3/g' -e 's/#7267ef/#e3167a/g' \
+        -e 's/#6659e0/#c41469/g' -e 's/#5345cc/#991152/g' \
+        -e 's/#4338a8/#6e0c3b/g' -e 's/#383087/#440724/g' \
+        /var/www/html/public/themes/${type}/servicioit/css/style.css 2>/dev/null || true; \
+    done
+
+# Crear symlink storage para logo
+RUN php artisan storage:link
 
 # Permisos
 RUN chown -R www-data:www-data /var/www/html/public/themes/admin/servicioit/ \
