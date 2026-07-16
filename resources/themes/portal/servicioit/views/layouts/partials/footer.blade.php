@@ -25,7 +25,7 @@
                     <div class="grid gap-2">
                         @foreach ($catalogs as $catalog)
                             <a href="{{ route('client.store.catalog', ['catalog' => $catalog->slug]) }}" class="text-slate-600 hover:text-billmora-primary-500">
-                                {{ __bilingual(__bilingual($catalog->name)) }}
+                                {{ $catalog->name }}
                             </a>
                         @endforeach
                     </div>
@@ -62,9 +62,8 @@
                 @endif
             </div>
         </div>
-        <div class="text-center border-t border-billmora-neutral-100 pt-6">
-            <span class="text-slate-500 font-semibold"><a href="https://www.servicio.it" target="_blank" class="text-billmora-primary-500 font-semibold hover:underline">© 1999-{{ date('Y') }} {{ Billmora::getGeneral('company_name') }}</a></span>
-            
+        <div class="text-center">
+            <span class="text-slate-500 font-semibold"><a href="https://www.servicio.it" target="_blank" class="text-billmora-primary-500 font-semibold hover:underline">© 1999-{{ date('Y') }} {{ Billmora::getGeneral('company_name') }}</a> </span>
         </div>
     </div>
 </footer>
