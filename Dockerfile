@@ -60,6 +60,10 @@ COPY plugin/Registrars/ /var/www/html/plugin/Registrars/
 COPY bootstrap/custom-providers.php /var/www/html/bootstrap/custom-providers.php
 COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
 
+# Copy restore script
+COPY scripts/restore-after-update.sh /var/www/html/scripts/restore-after-update.sh
+COPY bootstrap/providers.php /var/www/html/bootstrap/providers.php
+
 # Permisos
 RUN chown -R www-data:www-data /var/www/html/public/themes/admin/servicioit/ \
     /var/www/html/public/themes/client/servicioit/ \
