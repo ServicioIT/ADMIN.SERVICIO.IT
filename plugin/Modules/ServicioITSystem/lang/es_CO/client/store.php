@@ -36,7 +36,7 @@ return [
     'unavailable_currency' => 'No disponible en esta moneda.',
 
     'domain_search_label' => 'Buscar Dominio',
-    'domain_search_placeholder' => 'Encuentra tu dominio perfecto...',
+    'domain_search_placeholder' => 'Registro de dominio por 1 año con todas las ventajas de Cloudflare: DNS ultrarrápido, CDN global, SSL, protección DDoS, proxy y WAF.',
     'domain_register_tab' => 'Registrar',
     'domain_transfer_tab' => 'Transferir',
     'domain_available' => '¡Disponible!',
