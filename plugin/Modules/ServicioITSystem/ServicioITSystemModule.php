@@ -73,10 +73,34 @@ class ServicioITSystemModule extends AbstractPlugin implements ModuleInterface
     protected function setup(): void
     {
         require_once __DIR__ . '/helpers.php';
-        require_once __DIR__ . '/helpers.php';
         $this->mergeConfigOverrides();
         $this->publishTranslations();
         $this->checkAndRestore();
+        $this->shareCatalogs();
+    }
+
+    /**
+     * Share $catalogs variable with client::index and portal::index views.
+     * The custom SERVICIO IT landing page (used by both client dashboard and
+     * public portal) displays a catalog carousel that requires this variable.
+     */
+    protected function shareCatalogs(): void
+    {
+        \Illuminate\Support\Facades\View::composer(
+            ['client::index', 'portal::index'],
+            function ($view) {
+                if (!isset($view->catalogs)) {
+                    $view->with('catalogs', \App\Models\Catalog::where('status', 'visible')
+                        ->with(['packages' => function ($query) {
+                            $query->where('status', 'visible')->with('prices');
+                        }])
+                        ->withCount(['packages' => function ($query) {
+                            $query->where('status', 'visible');
+                        }])
+                        ->get());
+                }
+            }
+        );
     }
 
     /**
