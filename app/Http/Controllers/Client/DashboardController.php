@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Client;
 
 use App\Http\Controllers\Controller;
+use App\Models\Catalog;
 use App\Models\Invoice;
 use App\Models\Service;
 use App\Models\Ticket;
@@ -48,6 +49,16 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        $catalogs = Catalog::where('status', 'visible')
+            ->with(['packages' => function ($query) {
+                $query->where('status', 'visible')
+                      ->with('prices');
+            }])
+            ->withCount(['packages' => function ($query) {
+                $query->where('status', 'visible');
+            }])
+            ->get();
+
         return view('client::index',  compact([
             'user',
             'activeServicesCount',
@@ -56,6 +67,7 @@ class DashboardController extends Controller
             'activeServices',
             'unpaidInvoices',
             'openTickets',
+            'catalogs',
         ]));
     }
 }
