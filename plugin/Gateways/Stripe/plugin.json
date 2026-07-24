@@ -1,0 +1,9 @@
+{
+    "name": "Stripe Checkout",
+    "provider": "Stripe",
+    "type": "gateway",
+    "version": "1.0.0",
+    "description": "Accept payments globally via Stripe Checkout (Cards, Apple Pay, Google Pay).",
+    "author": "SERVICIO IT",
+    "icon": "https://js.stripe.com/v3/fingerprinted/img/favicon-32.png"
+}

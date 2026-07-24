@@ -53,6 +53,10 @@ COPY lang/es_CO/ /var/www/html/lang/es_CO/
 # Copy módulos custom SERVICIO IT
 COPY plugin/Modules/ServicioITSystem/ /var/www/html/plugin/Modules/ServicioITSystem/
 
+# Copy payment gateway plugins (Stripe, Wompi)
+COPY plugin/Gateways/Stripe/ /var/www/html/plugin/Gateways/Stripe/
+COPY plugin/Gateways/Wompi/ /var/www/html/plugin/Gateways/Wompi/
+
 # Copy registrar plugins
 COPY plugin/Registrars/ /var/www/html/plugin/Registrars/
 

@@ -1,0 +1,9 @@
+{
+    "name": "Wompi (Bancolombia)",
+    "provider": "Wompi",
+    "type": "gateway",
+    "version": "1.0.0",
+    "description": "Acepta pagos en Colombia vía Wompi: PSE, tarjetas, Nequi, Bancolombia y Efecty.",
+    "author": "SERVICIO IT",
+    "icon": "https://assets.wompi.co/logo/wompi_brand.svg"
+}
